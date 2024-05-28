@@ -8,6 +8,21 @@ public class NewsApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(NewsApplication.class, args);
+		System.out.println("Hello - news web app.");
 	}
 
 }
+/*
+
+configuration
+controller
+dto
+factory
+interfaces
+model
+repository
+response
+service
+
+
+*/
