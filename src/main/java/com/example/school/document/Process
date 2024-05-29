@@ -1,6 +1,7 @@
 ===============================================================================================================
 ===============================================================================================================
-## Step 1
+## Step 1 
+Status : [Completed]
 -> Packages with this name are created
 configuration
 controller
@@ -14,23 +15,31 @@ service
 
 ===============================================================================================================
 ## Step 2
+Status : [Completed]
 -> Model with these name are created
 article, category, comment, tag, user
 
 
 ===============================================================================================================
 ## Step 3
+Status : [Completed]
 -> Column are joined to implement foreign Key
 {@ManyToOne,@JoinColumn}, {@ManyToMany,@JoinTable} are being used
 
 
 ===============================================================================================================
 ## Step 4
--> Create repository for all table and add dummy data using annotations
+Status : [Completed] [fixed: @entity added, name fixed in @entity]
+-> Create repository for all table
 
 
 ===============================================================================================================
 ## Step 5
+-> Add dummy data using annotations to tables using repository 
+
+
+===============================================================================================================
+## Step 6
 -> Try fetching all data from database using annotations 
 
 
