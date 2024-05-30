@@ -32,10 +32,9 @@ Status : [Completed]
 Status : [Completed] [fixed: @entity added, name fixed in @entity]
 -> Create repository for all table
 
-
 ===============================================================================================================
-## Step 5
--> Add dummy data using annotations to tables using repository 
+## Step 5 [in progress]
+-> Creating configuration for adding dummy data using annotations to tables in sql database 
 
 
 ===============================================================================================================
