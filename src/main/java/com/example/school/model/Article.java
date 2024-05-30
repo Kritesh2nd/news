@@ -1,114 +1,96 @@
 package com.example.school.model;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
+import jakarta.persistence.*;
 
-
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "article")
-@Embeddable
 public class Article {
-	
-//	@Autowired
-//	private UserRepository userRepository;
-	
-//	@Autowired
-//	private CategoryRepository categoryRepository;
-	
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name = "article_id")
-	private long articleId;
-    
-	@NotBlank
-	private String title;
-    
-	@NotBlank
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "article_id")
+    private Long articleId;
+
+    @Column(name = "title", nullable = false)
+    private String title;
+
+    @Column(name = "content", nullable = false)
     private String content;
-    
-	@DateTimeFormat
-	@Column(name = "publication_date")
-    private Date publicationDate;
-    
-	@ManyToOne
-	@JoinColumn(name = "auther_id", referencedColumnName = "user_id", nullable = false)
-	private User user;
-    
-	@ManyToOne
-	@JoinColumn(name = "category_id", referencedColumnName = "category_id", nullable = false)
-	private Category category;
 
-	public Article() {}
+    @Column(name = "publication_date", nullable = false)
+    private LocalDateTime publicationDate;
 
-	public Article(@NotBlank String title, @NotBlank String content, Date publicationDate, User user,
+    @ManyToOne
+    @JoinColumn(name = "author_id", nullable = false)
+    private User author;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
+
+    public Article(){}
+	
+    public Article(String title, String content, LocalDateTime publicationDate, User author,
 			Category category) {
+		super();
 		this.title = title;
 		this.content = content;
 		this.publicationDate = publicationDate;
-		this.user = user;
+		this.author = author;
 		this.category = category;
 	}
 
-	public long getArticleId() {
+	public Long getArticleId() {
 		return articleId;
+	}
+
+	public void setArticleId(Long articleId) {
+		this.articleId = articleId;
 	}
 
 	public String getTitle() {
 		return title;
 	}
 
-	public String getContent() {
-		return content;
-	}
-
-	public Date getPublicationDate() {
-		return publicationDate;
-	}
-
-	public User getUser() {
-		return user;
-	}
-
-	public Category getCategory() {
-		return category;
-	}
-
-	public void setArticleId(long articleId) {
-		this.articleId = articleId;
-	}
-
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+	public String getContent() {
+		return content;
 	}
 
 	public void setContent(String content) {
 		this.content = content;
 	}
 
-	public void setPublicationDate(Date publicationDate) {
+	public LocalDateTime getPublicationDate() {
+		return publicationDate;
+	}
+
+	public void setPublicationDate(LocalDateTime publicationDate) {
 		this.publicationDate = publicationDate;
 	}
 
-	public void setUser(User user) {
-		this.user = user;
+	public User getAuthor() {
+		return author;
+	}
+
+	public void setAuthor(User author) {
+		this.author = author;
+	}
+
+	public Category getCategory() {
+		return category;
 	}
 
 	public void setCategory(Category category) {
 		this.category = category;
 	}
 	
+	
+    
 }

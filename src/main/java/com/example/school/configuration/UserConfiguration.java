@@ -13,8 +13,13 @@ public class UserConfiguration {
 	@Bean
 	CommandLineRunner userCommanddLineRuuner(UserRepository userRepository) {
 		return args -> {
-			userRepository.save(new User("liya","password","liya@gmail.com","Liya","Elf","admin"));
-			userRepository.save(new User("lifa","password","lifa@gmail.com","Lifa","Elf","admin"));
+			try {
+				userRepository.save(new User("liya","password","liya@gmail.com","Liya","Elf","admin"));
+				userRepository.save(new User("lifa","password","lifa@gmail.com","Lifa","Elf","admin"));
+			}
+			catch(Exception e) {
+				System.out.println("##### User ##### data already exists in database");
+			}
 		};
 	}
 }

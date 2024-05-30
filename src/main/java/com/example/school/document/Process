@@ -33,13 +33,16 @@ Status : [Completed] [fixed: @entity added, name fixed in @entity]
 -> Create repository for all table
 
 ===============================================================================================================
-## Step 5 [in progress]
--> Creating configuration for adding dummy data using annotations to tables in sql database 
+## Step 5 [completed] [entity is made using chatGpt for foreign key]
+-> Creating configuration for adding dummy data using annotations to tables in sql database
+ dummy data is inserted in db and its working. it throws error if same data is added so, using try...catch to
+ that problem. 
 
+[it is created in gitexp1 which meant experimental code from chatGpt]
 
 ===============================================================================================================
-## Step 6
--> Try fetching all data from database using annotations 
+## Step 6 [in progress]
+-> Try fetching all data from database using annotations. using service.
 
 
 ===============================================================================================================

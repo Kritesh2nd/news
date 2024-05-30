@@ -1,47 +1,40 @@
 package com.example.school.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "user")
-
 public class User {
-		
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name = "user_id")
-	private long userId;
-    
-	@NotBlank
-	private String username;
-    
-	@NotBlank
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
+    private Long userId;
+
+    @Column(name = "username", nullable = false, unique = true)
+    private String username;
+
+    @Column(name = "password", nullable = false)
     private String password;
-    
-	@Email
+
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
-    
-	@Column(name = "first_name")
+
+    @Column(name = "first_name")
     private String firstName;
-    
-	@Column(name = "last_name")
+
+    @Column(name = "last_name")
     private String lastName;
-    
-    @NotEmpty
+
+    @Column(name = "role", nullable = false)
     private String role;
 
-	public User() {}
-
-	public User(@NotBlank String username, @NotBlank String password, @Email String email,
-			String firstName, String lastName, @NotEmpty String role) {
+    public User() {}
+    
+    public User(String username, String password, String email, String firstName, String lastName,
+			String role) {
+		super();
 		this.username = username;
 		this.password = password;
 		this.email = email;
@@ -50,11 +43,11 @@ public class User {
 		this.role = role;
 	}
 
-	public long getUserId() {
+	public Long getUserId() {
 		return userId;
 	}
 
-	public void setUserId(long userId) {
+	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
 
@@ -105,5 +98,7 @@ public class User {
 	public void setRole(String role) {
 		this.role = role;
 	}
+
+    
     
 }

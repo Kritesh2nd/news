@@ -1,30 +1,23 @@
 package com.example.school.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "category")
 public class Category {
-	@Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name = "category_id")
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "category_id")
     private Long categoryId;
-	
-	@NotBlank
-	@Column(name = "category_name")
-	private String categoryName;
 
-	public Category() {}
+    @Column(name = "category_name", nullable = false, unique = true)
+    private String categoryName;
 
-	public Category(Long categoryId, @NotBlank String categoryName) {
-		super();
-		this.categoryId = categoryId;
+    
+    public Category() {}
+    
+	public Category(String categoryName) {
 		this.categoryName = categoryName;
 	}
 
@@ -43,5 +36,6 @@ public class Category {
 	public void setCategoryName(String categoryName) {
 		this.categoryName = categoryName;
 	}
-	
+
+    
 }

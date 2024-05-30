@@ -1,48 +1,55 @@
 package com.example.school.model;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "article_tag")
-
 public class ArticleTag {
-	
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name = "article_tag_id")
-	private long articleTagId;
-	
-	@Column(name = "article_id")
-	private long articleId;
-	
-	@Column(name = "tag_id")
-	private long tagId;
-	
-	public ArticleTag() {}
 
-	public ArticleTag(long articleTagId, long articleId, long tagId) {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "article_tag_id")
+    private Long articleTagId;
+
+    @ManyToOne
+    @JoinColumn(name = "article_id", nullable = false)
+    private Article article;
+
+    @ManyToOne
+    @JoinColumn(name = "tag_id", nullable = false)
+    private Tag tag;
+
+    public ArticleTag() {}
+	
+    public ArticleTag(Article article, Tag tag) {
 		super();
+		this.article = article;
+		this.tag = tag;
+	}
+
+	public Long getArticleTagId() {
+		return articleTagId;
+	}
+
+	public void setArticleTagId(Long articleTagId) {
 		this.articleTagId = articleTagId;
-		this.articleId = articleId;
-		this.tagId = tagId;
 	}
 
-	public void setArticleTagId(long articleTagId) {
-		this.articleTagId = articleTagId;
+	public Article getArticle() {
+		return article;
 	}
 
-	public void setArticleId(long articleId) {
-		this.articleId = articleId;
+	public void setArticle(Article article) {
+		this.article = article;
 	}
 
-	public void setTagId(long tagId) {
-		this.tagId = tagId;
+	public Tag getTag() {
+		return tag;
 	}
-	
-	
+
+	public void setTag(Tag tag) {
+		this.tag = tag;
+	}
+
+    
+    
 }
