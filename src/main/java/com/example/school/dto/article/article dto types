@@ -1,0 +1,24 @@
+all dto types
+
+
+for user - response
+
+shortArticleDto
+title, author, short content, image
+
+microArticleDto
+title, image
+
+generalArticleDto
+title, author,  content, image , dateTime
+
+generalArticleDto
+title, author,  content, image , dateTime
+
+
+
+for editor - 
+
+
+control pov
+localhost / category / date / title

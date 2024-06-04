@@ -1,13 +1,10 @@
 package com.example.school.dto.user;
 
-import jakarta.persistence.Column;
-
 public class LoginUserDto {
 	
-	@Column(name = "email", nullable = false, unique = true)
+//	TODO remove unnecessary tags
     private String email;
 	
-	@Column(name = "password", nullable = false)
     private String password;
 
 	public LoginUserDto() {}

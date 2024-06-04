@@ -23,7 +23,13 @@ public class Article {
 
     @Column(name = "title", nullable = false)
     private String title;
-
+    
+    @Column(name = "short_content", nullable = false)
+    private String shortContent;
+    
+    @Column(name = "image_url", nullable = false)
+    private String imageUrl;
+    
     @Column(name = "content", nullable = false)
     private String content;
 
@@ -38,12 +44,15 @@ public class Article {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    public Article(){}
-	
-    public Article(String title, String content, LocalDateTime publicationDate, User author,
-			Category category) {
+    public Article() {}
+    
+    public Article(Long articleId, String title, String shortContent, String imageUrl, String content,
+			LocalDateTime publicationDate, User author, Category category) {
 		super();
+		this.articleId = articleId;
 		this.title = title;
+		this.shortContent = shortContent;
+		this.imageUrl = imageUrl;
 		this.content = content;
 		this.publicationDate = publicationDate;
 		this.author = author;
@@ -64,6 +73,22 @@ public class Article {
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+	public String getShortContent() {
+		return shortContent;
+	}
+
+	public void setShortContent(String shortContent) {
+		this.shortContent = shortContent;
+	}
+
+	public String getImageUrl() {
+		return imageUrl;
+	}
+
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
 	}
 
 	public String getContent() {
@@ -97,7 +122,5 @@ public class Article {
 	public void setCategory(Category category) {
 		this.category = category;
 	}
-	
-	
-    
+
 }

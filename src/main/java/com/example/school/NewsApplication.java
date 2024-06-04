@@ -10,7 +10,7 @@ public class NewsApplication {
 		SpringApplication.run(NewsApplication.class, args);
 		System.out.println("Hello - news web app.");
 	}
-
+	
 }
 /*
 

@@ -1,25 +1,18 @@
 package com.example.school.dto.user;
 
-import jakarta.persistence.Column;
-
 public class RegisterUserDto {
 
-    @Column(name = "username", nullable = false, unique = true)
+//	TODO remove unnecessary tags
     private String username;
 
-    @Column(name = "email", nullable = false, unique = true)
     private String email;
-
-    @Column(name = "first_name")
+ 
     private String firstName;
-    
-    @Column(name = "last_name")
+
     private String lastName;
-    
-    @Column(name = "password", nullable = false)
+ 
     private String password;
 
-    @Column(name = "role", nullable = false)
     private String role;
 
     public RegisterUserDto() {}
@@ -82,7 +75,5 @@ public class RegisterUserDto {
 	public void setRole(String role) {
 		this.role = role;
 	}
-    
-    
     
 }
