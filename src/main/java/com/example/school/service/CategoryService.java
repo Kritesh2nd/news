@@ -57,7 +57,6 @@ public class CategoryService implements CategoryServiceInterface{
 
 	@Override
 	public BasicResponseDto addAllCategories(List<String> category) {
-		System.out.println("category list size: "+category.size());
 		
 		for(String c : category) {
 			addCategory(c);
@@ -74,7 +73,7 @@ public class CategoryService implements CategoryServiceInterface{
 			categoryRepository.save(updatedCategory);
 		}
 		catch(Exception e) {
-			System.out.println("ERRRRRRROR in Category: "+e);
+			System.out.println("ERRRRRRROR in Category Update: "+e);
 		}
 		return new BasicResponseDto("Category updated successfully.",true);
 	}

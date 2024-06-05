@@ -42,10 +42,8 @@ Status : [Completed] [fixed: @entity added, name fixed in @entity]
 [dai said, instead create api to populate data then using configure]
 
 ===============================================================================================================
-## Step 6 [in progress 5%]
--> Try fetching all data from database using annotations. using service.
--> a fragment of user service * user controller works 
-
+## Step 6 [completed]
+api is working for user, category, article 
 
 ===============================================================================================================
 

@@ -61,6 +61,5 @@ public class UserController {
 	public ResponseEntity<BasicResponseDto> deleteById(@PathVariable Long id){
 		return new ResponseEntity<BasicResponseDto>(userService.deleteUser(id),HttpStatus.OK);
 	}
-	
-	
+
 }

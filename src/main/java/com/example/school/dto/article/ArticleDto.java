@@ -1,54 +1,31 @@
-package com.example.school.model;
+package com.example.school.dto.article;
 
 import java.time.LocalDateTime;
 
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Column;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
+import com.example.school.model.Category;
+import com.example.school.model.User;
 
-
-@Entity
-@Table(name = "article")
-public class Article {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "article_id")
+public class ArticleDto {
+	
     private Long articleId;
 
-    @Column(name = "title", nullable = false)
     private String title;
     
-    @Column(name = "short_content", nullable = false)
     private String shortContent;
     
-    @Column(name = "image_url", nullable = false)
     private String imageUrl;
     
-    @Column(name = "content", nullable = false, columnDefinition = "LONGTEXT")
-    @Lob
     private String content;
 
-    @Column(name = "publication_date", nullable = false)
     private LocalDateTime publicationDate;
 
-    @ManyToOne
-    @JoinColumn(name = "author_id", nullable = false)
     private User author;
 
-    @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    public Article() {}
+    public ArticleDto() {}
     
-    public Article(Long articleId, String title, String shortContent, String imageUrl, String content,
+    public ArticleDto(Long articleId, String title, String shortContent, String imageUrl, String content,
 			LocalDateTime publicationDate, User author, Category category) {
 		super();
 		this.articleId = articleId;
@@ -126,3 +103,6 @@ public class Article {
 	}
 
 }
+
+
+

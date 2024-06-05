@@ -3,22 +3,23 @@ all dto types
 
 for user - response
 
-shortArticleDto
-title, author, short content, image
+MicroArticleDto
+id, title, image
 
-microArticleDto
-title, image
+ShortArticleDto
+id, title, author, short content, image
 
-generalArticleDto
-title, author,  content, image , dateTime
+GeneralArticleDto
+id, title, author,  content, image , dateTime
 
-generalArticleDto
-title, author,  content, image , dateTime
+for editor -
+ArticleDto
+id, title, short content, content, image, date, author id, category id 
 
-
-
-for editor - 
 
 
 control pov
 localhost / category / date / title
+
+
+

@@ -1,5 +1,6 @@
 package com.example.school.exception;
 
+@SuppressWarnings("serial")
 public class DuplicateElementException extends RuntimeException{
 
 	private String message;
