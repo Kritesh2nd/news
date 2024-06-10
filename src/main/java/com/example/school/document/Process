@@ -46,6 +46,21 @@ Status : [Completed] [fixed: @entity added, name fixed in @entity]
 api is working for user, category, article 
 
 ===============================================================================================================
+new files
+FilterConfiguration
+SecurityConfiguration
+AuthenticationFilter
+
+
+modified file
+UserService
+application.properties
+
+
+
+
+
+===============================================================================================================
 
 
 
