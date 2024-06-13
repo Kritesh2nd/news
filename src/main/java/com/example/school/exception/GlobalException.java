@@ -1,5 +1,6 @@
 package com.example.school.exception;
 
+import java.lang.reflect.InaccessibleObjectException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -71,6 +72,15 @@ public class GlobalException {
 		return errorMap;
 	}	
 
+	
+	@ResponseStatus(HttpStatus.UNAUTHORIZED)
+	@ExceptionHandler(InaccessibleObjectException.class)
+	public Map<String, String> handelForbiddenException(InaccessibleObjectException ex){
+		Map<String,String> errorMap = new HashMap<>();
+		String message = (ex.getMessage()!=null)?ex.getMessage():"Forbidden Area. You do not have access to this url.";
+		errorMap.put("error", message);
+		return errorMap;
+	}
 }	
 	
 	

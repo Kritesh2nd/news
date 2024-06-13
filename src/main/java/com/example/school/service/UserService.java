@@ -6,6 +6,10 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.school.dto.user.GeneralUserDto;
@@ -16,7 +20,7 @@ import com.example.school.response.BasicResponseDto;
 import com.example.school.service.interfaces.UserServiceInterfaces;
 
 @Service
-public class UserService implements UserServiceInterfaces{
+public class UserService implements UserServiceInterfaces, UserDetailsService{
 
 	@Autowired
 	private ModelMapper modelMapper;
@@ -24,6 +28,8 @@ public class UserService implements UserServiceInterfaces{
 	@Autowired
 	private UserRepository userRepository;
 
+	@Autowired
+    private PasswordEncoder passwordEncoder;
 	
 	@Override
 	public List<GeneralUserDto> getGeneralUserList() {
@@ -54,6 +60,8 @@ public class UserService implements UserServiceInterfaces{
 		}
 
 		User user = modelMapper.map(newUser, User.class);
+		String encryptedPassword = encodePassword(user.getPassword());
+		user.setPassword(encryptedPassword);
 		userRepository.save(user);
 		
 		return new BasicResponseDto("New user added successfully.",true);
@@ -114,6 +122,16 @@ public class UserService implements UserServiceInterfaces{
 			throw new NoSuchElementException("User not found");
 		}
 		return user;
+	}
+	
+	public String encodePassword(String rawPassword) {
+        return passwordEncoder.encode(rawPassword);
+    }
+
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		User userWithEmail = userRepository.findUserByEmail(username);
+		return userWithEmail;
 	}
 }
 

@@ -3,6 +3,12 @@ package com.example.school.model;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+
+import java.util.Collection;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,7 +16,7 @@ import jakarta.persistence.GenerationType;
 
 @Entity
 @Table(name = "user")
-public class User {
+public class User implements UserDetails{
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -120,6 +126,12 @@ public class User {
 
 	public void setRole(String role) {
 		this.role = role;
+	}
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
     
