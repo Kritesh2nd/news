@@ -1,0 +1,77 @@
+===============================================================================================================
+===============================================================================================================
+## Step 1 
+Status : [Completed]
+-> Packages with this name are created
+configuration
+controller
+dto
+factory
+interfaces
+model
+repository
+response
+service
+
+===============================================================================================================
+## Step 2
+Status : [Completed]
+-> Model with these name are created
+article, category, comment, tag, user
+
+
+===============================================================================================================
+## Step 3
+Status : [Completed]
+-> Column are joined to implement foreign Key
+{@ManyToOne,@JoinColumn}, {@ManyToMany,@JoinTable} are being used
+
+
+===============================================================================================================
+## Step 4
+Status : [Completed] [fixed: @entity added, name fixed in @entity]
+-> Create repository for all table
+
+===============================================================================================================
+## Step 5 [completed] [entity is made using chatGpt for foreign key][deleting all this configuration]
+-> Creating configuration for adding dummy data using annotations to tables in sql database
+ dummy data is inserted in db and its working. it throws error if same data is added so, using try...catch to
+ that problem. 
+
+[it is created in gitexp1 which meant experimental code from chatGpt]
+[dai said, instead create api to populate data then using configure]
+
+===============================================================================================================
+## Step 6 [completed]
+api is working for user, category, article 
+
+===============================================================================================================
+new files
+FilterConfiguration
+SecurityConfiguration
+AuthenticationFilter
+
+
+modified file
+UserService
+application.properties
+
+
+
+
+
+===============================================================================================================
+model
+controller
+repository
+
+security
+security.authentication
+security.filter
+security.manager
+security.provider
+
+
+
+
+
