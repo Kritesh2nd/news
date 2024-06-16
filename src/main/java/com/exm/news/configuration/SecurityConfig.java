@@ -22,6 +22,18 @@ public class SecurityConfig {
 		return http
 				.addFilterAt(customFilter, UsernamePasswordAuthenticationFilter.class)
 				.authorizeHttpRequests((authorize) -> authorize
+						
+						.requestMatchers("/user/add").permitAll()
+						
+						.requestMatchers("/article/list").permitAll()
+						.requestMatchers("/article/listAll").permitAll()
+						.requestMatchers("/article/{id}").permitAll()
+						.requestMatchers("/article/listByDate").permitAll()
+						.requestMatchers("/article/listByDateRange").permitAll()
+						.requestMatchers("/article/listByCategory").permitAll()
+						.requestMatchers("/article/listByDateAndCategory").permitAll()
+						.requestMatchers("/article/listByDateRangeWithCategory").permitAll()
+						
 				        .anyRequest().authenticated()
 				)
 				
