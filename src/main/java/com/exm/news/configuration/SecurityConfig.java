@@ -25,7 +25,6 @@ public class SecurityConfig {
 						
 						.requestMatchers("/user/add").permitAll()
 						
-						.requestMatchers("/article/list").permitAll()
 						.requestMatchers("/article/listAll").permitAll()
 						.requestMatchers("/article/{id}").permitAll()
 						.requestMatchers("/article/listByDate").permitAll()

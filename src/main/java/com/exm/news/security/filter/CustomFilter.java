@@ -30,6 +30,12 @@ public class CustomFilter extends OncePerRequestFilter{
 		
 		final String authorization = request.getHeader("Authorization");
 		
+		
+		if(authorization == null) {
+			chain.doFilter(request, response);
+			return;
+		}
+		
 		System.out.println("authorization: "+authorization);
 		
 		String base64Credentials = authorization.substring("Basic".length()).trim();
