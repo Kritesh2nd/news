@@ -7,6 +7,8 @@ public class PathConstant {
 	public static final String CATEGORY="/category/";
 	public static final String ARTICLE="/article/";
 	 
+	public static final String LOGIN="login";
+	
 	public static final String LIST="list";
 	public static final String LIST_ALL="listAll";
 	public static final String GET_BY_ID="{id}";

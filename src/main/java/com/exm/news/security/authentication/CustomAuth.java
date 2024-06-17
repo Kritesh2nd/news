@@ -15,7 +15,7 @@ public class CustomAuth implements Authentication {
 	private boolean authentication;
 	private String username;
 	private String password;
-	private List<GrantedAuthority> grantedAuthority; 
+	private List<GrantedAuthority> grantedAuthority;
 	
 	@Override
 	public String getName() {
@@ -55,7 +55,6 @@ public class CustomAuth implements Authentication {
 	@Override
 	public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
 		this.authentication = isAuthenticated;
-		
 	}
 
 	public CustomAuth() {}
@@ -64,6 +63,14 @@ public class CustomAuth implements Authentication {
 		this.authentication = authentication;
 		this.username = username;
 		this.password = password;
+	}
+	public CustomAuth(boolean authentication, String username, String password,
+			List<GrantedAuthority> grantedAuthority) {
+		super();
+		this.authentication = authentication;
+		this.username = username;
+		this.password = password;
+		this.grantedAuthority = grantedAuthority;
 	}
 
 	public boolean isAuthentication() {
@@ -89,12 +96,21 @@ public class CustomAuth implements Authentication {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+	
+	public List<GrantedAuthority> getGrantedAuthority() {
+		return grantedAuthority;
+	}
+
+	public void setGrantedAuthority(List<GrantedAuthority> grantedAuthority) {
+		this.grantedAuthority = grantedAuthority;
+	}
 
 	@Override
 	public String toString() {
 		return "CustomAuth [authentication=" + authentication + ", username=" + username + ", password=" + password
 				+ "]";
 	}
+	
 	
 	
 	

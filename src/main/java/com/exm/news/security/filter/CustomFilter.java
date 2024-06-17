@@ -23,13 +23,16 @@ public class CustomFilter extends OncePerRequestFilter{
 	@Autowired
 	private AuthManager authManager;
 
-
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws ServletException, IOException {
 		
 		final String authorization = request.getHeader("Authorization");
 		
+		if(authorization == null) {
+			chain.doFilter(request, response);
+			return;
+		}
 		System.out.println("authorization: "+authorization);
 		
 		String base64Credentials = authorization.substring("Basic".length()).trim();
@@ -39,22 +42,13 @@ public class CustomFilter extends OncePerRequestFilter{
         // credentials = username:password
         final String[] values = credentials.split(":", 2);
         String username = values[0];
-        String password = values[1];
-        
-        
-		
+        String password = values[1];     
 		
         System.out.println("username: "+username+", password: "+password);
-		
-		
-		
-		
-        
+
         CustomAuth ca = new CustomAuth(false, username,password);
         
         System.out.println("ca: "+ca.getUsername()+", "+ca.getPassword());
-        
-        
         
         CustomAuth auth = (CustomAuth) authManager.authenticate(ca);
 		System.out.println("auth: "+auth.toString());
@@ -65,11 +59,8 @@ public class CustomFilter extends OncePerRequestFilter{
 			return;
 		}
         
-        
         chain.doFilter(request, response);
 		
-        
 	}
-
 
 }
