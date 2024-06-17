@@ -60,6 +60,24 @@
    			<artifactId>spring-boot-starter-security</artifactId>
   		</dependency>
 		<!-- spring security stop -->
+		<!-- Jwt token start -->
+		<dependency>
+		    <groupId>io.jsonwebtoken</groupId>
+		    <artifactId>jjwt-api</artifactId>
+		    <version>0.11.5</version>
+		</dependency>
+		<dependency>
+		    <groupId>io.jsonwebtoken</groupId>
+		    <artifactId>jjwt-impl</artifactId>
+		    <version>0.11.5</version>
+		</dependency>
+		<dependency>
+		    <groupId>io.jsonwebtoken</groupId>
+		    <artifactId>jjwt-jackson</artifactId>
+		    <version>0.11.5</version>
+		</dependency>
+		<!-- Jwt token stop -->
+		
 	</dependencies>
 
 	<build>
