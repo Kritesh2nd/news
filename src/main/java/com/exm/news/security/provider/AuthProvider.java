@@ -1,7 +1,5 @@
 package com.exm.news.security.provider;
 
-
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -27,6 +25,8 @@ public class AuthProvider implements AuthenticationProvider {
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 		CustomAuth ca = (CustomAuth) authentication;
+		
+		
 		
 		System.out.println("ca.getPassword() top "+ca.getPassword());
 		User user = userRespository.findUserByEmail(ca.getUsername());

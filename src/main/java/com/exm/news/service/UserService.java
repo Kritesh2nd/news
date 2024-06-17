@@ -64,7 +64,6 @@ public class UserService implements UserServiceInterfaces{
 		return new BasicResponseDto("New user added successfully.",true);
 	}
 
-
 	@Override
 	public BasicResponseDto updateUser(GeneralUserDto newUserData) {
 		try {
@@ -83,7 +82,6 @@ public class UserService implements UserServiceInterfaces{
 		}
 		return new BasicResponseDto("User updated successfully.",true);
 	}
-
 
 	@Override
 	public BasicResponseDto updateUserPassword(Long id, String password) {
@@ -109,8 +107,6 @@ public class UserService implements UserServiceInterfaces{
 		userRepository.deleteAll();
 		return new BasicResponseDto("All users deleted successfully.",true);
 	}
-
-
 	
 	public User getUserById(Long id) {
 //		Using native query findUserById()

@@ -18,14 +18,11 @@ public class CategoryService implements CategoryServiceInterface{
 	@Autowired
 	private CategoryRepository categoryRepository;
 	
-	
-	
 	public List<Category> getCategoryList() {
 		List<Category> categoryList = categoryRepository.findAll();
 		
 		return categoryList;
 	}
-
 	
 	public Category getCategoryById(Long id) {
 		Optional<Category> category = categoryRepository.findById(id);
@@ -43,7 +40,6 @@ public class CategoryService implements CategoryServiceInterface{
 		
 		if(categoryExist != null) {
 			return new BasicResponseDto("Category already exits.",false);
-		
 		}
 		
 		Category newCategory = new Category();
