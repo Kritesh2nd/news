@@ -4,14 +4,21 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 
+import java.util.Collection;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 
+import java.util.List;
+
 @Entity
 @Table(name = "user")
-public class User{
+public class User implements UserDetails{
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,11 +49,31 @@ public class User{
     @Column(name = "role", nullable = false)
     private String role;
 
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return List.of(() -> "read");
+	}
+
+	@Override
+	public String getPassword() {
+		return password;
+	}
+
+	@Override
+	public String getUsername() {
+		return username;
+	}
+
 	public User() {}
-    
-    public User(String username, String password, String email, String firstName, String lastName,
-			String role) {
+	
+	public User(Long userId, @NotBlank(message = "please enter data") String username,
+			@NotBlank(message = "please enter data") String password,
+			@NotBlank(message = "please enter data") String email,
+			@NotBlank(message = "please enter data") String firstName,
+			@NotBlank(message = "please enter data") String lastName,
+			@NotBlank(message = "please enter data") String role) {
 		super();
+		this.userId = userId;
 		this.username = username;
 		this.password = password;
 		this.email = email;
@@ -61,22 +88,6 @@ public class User{
 
 	public void setUserId(Long userId) {
 		this.userId = userId;
-	}
-
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
 	}
 
 	public String getEmail() {
@@ -110,5 +121,15 @@ public class User{
 	public void setRole(String role) {
 		this.role = role;
 	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	
 
 }

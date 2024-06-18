@@ -4,7 +4,8 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.exm.news.constant.PathConstant;
 import com.exm.news.dto.user.GeneralUserDto;
 import com.exm.news.dto.user.RegisterUserDto;
+import com.exm.news.model.User;
 import com.exm.news.response.BasicResponseDto;
 import com.exm.news.service.UserService;
 
@@ -61,5 +63,18 @@ public class UserController {
 	public ResponseEntity<BasicResponseDto> deleteById(@PathVariable Long id){
 		return new ResponseEntity<BasicResponseDto>(userService.deleteUser(id),HttpStatus.OK);
 	}
+	
+	@GetMapping("/me")
+    public ResponseEntity<?> authenticatedUser() {
+		System.out.println("authenticatedUser me");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        System.out.println("authentication.getPrincipal() me: "+authentication.getPrincipal());
+        User currentUser = (User) authentication.getPrincipal();
+
+        return ResponseEntity.ok(currentUser);
+    }
+
+
 
 }

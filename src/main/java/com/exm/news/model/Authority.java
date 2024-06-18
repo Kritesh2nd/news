@@ -19,8 +19,8 @@ public class Authority {
 	
 	private String name;
 	
-	@ManyToMany(mappedBy = "authorities")
-    private Set<User> users;
+//	@ManyToMany(mappedBy = "authorities")
+//    private Set<User> users;
 
 	public int getId() {
 		return id;
@@ -38,12 +38,12 @@ public class Authority {
 		this.name = name;
 	}
 
-	public Set<User> getUsers() {
-		return users;
-	}
-
-	public void setUsers(Set<User> users) {
-		this.users = users;
-	}
+//	public Set<User> getUsers() {
+//		return users;
+//	}
+//
+//	public void setUsers(Set<User> users) {
+//		this.users = users;
+//	}
 	
 }

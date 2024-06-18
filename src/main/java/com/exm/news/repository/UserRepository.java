@@ -1,6 +1,8 @@
 package com.exm.news.repository;
 
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -11,6 +13,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
     
 	@Query(nativeQuery = true, value="SELECT * FROM user u where u.email = :email")
 	User findUserByEmail(String email);
+	
+	@Query(nativeQuery = true, value="SELECT * FROM user u where u.email = :email")
+	Optional<User> findUserByEmailOptonal(String email);
+	
+//	@Query(nativeQuery = true, value="SELECT * FROM user u where u.email = :email")
+//	Optional<SecurityUser> findSecurityUserByEmail(String email);
 	
 	@Query(nativeQuery = true, value="SELECT * FROM user u where u.user_id = :id")
 	User findUserById(Long id);
