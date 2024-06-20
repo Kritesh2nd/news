@@ -13,19 +13,16 @@ public class RegisterUserDto {
  
     private String password;
 
-    private String role;
 
     public RegisterUserDto() {}
 	
-    public RegisterUserDto(String username, String email, String firstName, String lastName, String password,
-			String role) {
+    public RegisterUserDto(String username, String email, String firstName, String lastName, String password) {
 		super();
 		this.username = username;
 		this.email = email;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.password = password;
-		this.role = role;
 	}
 
 	public String getUsername() {
@@ -66,14 +63,6 @@ public class RegisterUserDto {
 
 	public void setPassword(String password) {
 		this.password = password;
-	}
-
-	public String getRole() {
-		return role;
-	}
-
-	public void setRole(String role) {
-		this.role = role;
 	}
     
 }

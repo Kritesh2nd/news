@@ -6,8 +6,6 @@ public class PathConstant {
 	public static final String USER="/user/";
 	public static final String CATEGORY="/category/";
 	public static final String ARTICLE="/article/";
-	 
-	public static final String LOGIN="login";
 	
 	public static final String LIST="list";
 	public static final String LIST_ALL="listAll";
@@ -23,5 +21,9 @@ public class PathConstant {
 	public static final String UPDATE="update";
 	public static final String DELETE_ALL="deleteAll";
 	public static final String DELETE_BY_ID="delete/{id}";
+	
+	public static final String SIGNUP="signup";
+	public static final String LOGIN="login";
+	public static final String ME="me";
 	 
 }

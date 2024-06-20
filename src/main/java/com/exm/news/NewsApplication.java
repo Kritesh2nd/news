@@ -11,4 +11,4 @@ public class NewsApplication {
 		System.out.println("Hello - News Web App");
 	}
 	
-}
+}	

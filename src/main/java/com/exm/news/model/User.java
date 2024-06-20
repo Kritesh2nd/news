@@ -1,28 +1,27 @@
 package com.exm.news.model;
 
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 
-import java.util.Collection;
-
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 
-import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "user")
-public class User implements UserDetails{
+public class User{
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
+    @Column(name = "id")
     private Long userId;
 
 	@NotBlank(message="please enter data")
@@ -45,24 +44,11 @@ public class User implements UserDetails{
     @Column(name = "last_name")
     private String lastName;
 
-	@NotBlank(message="please enter data")
-    @Column(name = "role", nullable = false)
-    private String role;
-
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return List.of(() -> "read");
-	}
-
-	@Override
-	public String getPassword() {
-		return password;
-	}
-
-	@Override
-	public String getUsername() {
-		return username;
-	}
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = "user_authorities",
+	 	joinColumns = @JoinColumn(name = "user_id",updatable=true),
+	 	inverseJoinColumns = @JoinColumn(name = "authority_id",updatable=true))
+	private Set<Authority> authorities;
 
 	public User() {}
 	
@@ -70,8 +56,7 @@ public class User implements UserDetails{
 			@NotBlank(message = "please enter data") String password,
 			@NotBlank(message = "please enter data") String email,
 			@NotBlank(message = "please enter data") String firstName,
-			@NotBlank(message = "please enter data") String lastName,
-			@NotBlank(message = "please enter data") String role) {
+			@NotBlank(message = "please enter data") String lastName, Set<Authority> authorities) {
 		super();
 		this.userId = userId;
 		this.username = username;
@@ -79,7 +64,7 @@ public class User implements UserDetails{
 		this.email = email;
 		this.firstName = firstName;
 		this.lastName = lastName;
-		this.role = role;
+		this.authorities = authorities;
 	}
 
 	public Long getUserId() {
@@ -88,6 +73,22 @@ public class User implements UserDetails{
 
 	public void setUserId(Long userId) {
 		this.userId = userId;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	public String getEmail() {
@@ -114,22 +115,12 @@ public class User implements UserDetails{
 		this.lastName = lastName;
 	}
 
-	public String getRole() {
-		return role;
+	public Set<Authority> getAuthorities() {
+		return authorities;
 	}
 
-	public void setRole(String role) {
-		this.role = role;
+	public void setAuthorities(Set<Authority> authorities) {
+		this.authorities = authorities;
 	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
 	
-
 }
