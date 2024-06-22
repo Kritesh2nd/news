@@ -13,6 +13,7 @@ public class UserAuth implements Authentication{
 	private boolean authenticated;
 	private String email;
 	private String password;
+	private String token;
 	private List<GrantedAuthority> authority; 
 	
 	@Override
@@ -55,12 +56,14 @@ public class UserAuth implements Authentication{
 	}
 
 	public UserAuth() {}
-	
-	public UserAuth(boolean authenticated, String email, String password, List<GrantedAuthority> authority) {
+
+	public UserAuth(boolean authenticated, String email, String password, String token,
+			List<GrantedAuthority> authority) {
 		super();
 		this.authenticated = authenticated;
 		this.email = email;
 		this.password = password;
+		this.token = token;
 		this.authority = authority;
 	}
 
@@ -80,6 +83,14 @@ public class UserAuth implements Authentication{
 		this.password = password;
 	}
 
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
+
 	public List<GrantedAuthority> getAuthority() {
 		return authority;
 	}
@@ -87,6 +98,5 @@ public class UserAuth implements Authentication{
 	public void setAuthority(List<GrantedAuthority> authority) {
 		this.authority = authority;
 	}
-
 	
 }

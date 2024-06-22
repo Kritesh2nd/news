@@ -1,5 +1,7 @@
 package com.exm.news.dto.user;
 
+import java.util.List;
+
 public class GeneralUserDto {
 	
 //	TODO remove unnecessary tags
@@ -13,11 +15,12 @@ public class GeneralUserDto {
     
     private String lastName;
 
-    private String role;
+    private List<String> role;
 
     public GeneralUserDto() {}
-    
-    public GeneralUserDto(Long userId, String username, String email, String firstName, String lastName, String role) {
+
+	public GeneralUserDto(Long userId, String username, String email, String firstName, String lastName,
+			List<String> role) {
 		super();
 		this.userId = userId;
 		this.username = username;
@@ -67,11 +70,11 @@ public class GeneralUserDto {
 		this.lastName = lastName;
 	}
 
-	public String getRole() {
+	public List<String> getRole() {
 		return role;
 	}
 
-	public void setRole(String role) {
+	public void setRole(List<String> role) {
 		this.role = role;
 	}
     

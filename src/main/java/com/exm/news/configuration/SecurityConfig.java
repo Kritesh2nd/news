@@ -8,14 +8,18 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.exm.news.security.filter.CustomFilter;
+import com.exm.news.security.filter.BearerTokenFilter;
+import com.exm.news.security.filter.BasicAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
 	@Autowired
-	private CustomFilter customJwtFilter;
+	private BasicAuthenticationFilter customJwtFilter;
+	
+	@Autowired
+	private BearerTokenFilter bearerFilter;
 	
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -24,12 +28,17 @@ public class SecurityConfig {
 				.csrf(csrf -> csrf.disable())
 				
 				.addFilterBefore(customJwtFilter, UsernamePasswordAuthenticationFilter.class)
+				.addFilterBefore(bearerFilter, UsernamePasswordAuthenticationFilter.class)
+				
 				.authorizeHttpRequests(authorize -> authorize
 						
-						.requestMatchers("/user/add").permitAll()
-						.requestMatchers("/user/me").permitAll()
+						.requestMatchers("/signup").permitAll()
+//						.requestMatchers("/login").permitAll()
+						.requestMatchers("/me").hasAnyAuthority("editor")
+						
 						.requestMatchers("/user/list").permitAll()
-						.requestMatchers("/auth/**").permitAll()
+						.requestMatchers("/user/updateAuthority").hasAnyAuthority("admin")
+						.requestMatchers("/user/deleteAuthority").hasAnyAuthority("admin")
 						
 						.requestMatchers("/article/listAll").permitAll()
 						.requestMatchers("/article/{id}").permitAll()
@@ -38,6 +47,15 @@ public class SecurityConfig {
 						.requestMatchers("/article/listByCategory").permitAll()
 						.requestMatchers("/article/listByDateAndCategory").permitAll()
 						.requestMatchers("/article/listByDateRangeWithCategory").permitAll()
+						
+						.requestMatchers("/article/add").hasAnyAuthority("admin","editor")
+						.requestMatchers("/article/edit").hasAnyAuthority("admin","editor")
+						.requestMatchers("/article/delete").hasAnyAuthority("admin","editor")
+						
+						
+						.requestMatchers("/admin").hasAnyAuthority("admin")
+						.requestMatchers("/editor").hasAnyAuthority("admin","editor")
+						.requestMatchers("/reader").hasAnyAuthority("admin","editor","reader")
 						
 				        .anyRequest().authenticated()
 				)

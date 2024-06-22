@@ -19,8 +19,10 @@ public class PathConstant {
 	public static final String ADD="add";
 	public static final String ADD_ALL="addAll";
 	public static final String UPDATE="update";
+	public static final String UPDATE_ROLE="updateAuthority";
 	public static final String DELETE_ALL="deleteAll";
 	public static final String DELETE_BY_ID="delete/{id}";
+	public static final String DELETE_ROLE="deleteAuthority";
 	
 	public static final String SIGNUP="signup";
 	public static final String LOGIN="login";

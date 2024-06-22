@@ -16,7 +16,7 @@ import jakarta.persistence.GenerationType;
 import java.util.Set;
 
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 public class User{
 
 	@Id
@@ -44,7 +44,7 @@ public class User{
     @Column(name = "last_name")
     private String lastName;
 
-	@ManyToMany(fetch = FetchType.LAZY)
+	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "user_authorities",
 	 	joinColumns = @JoinColumn(name = "user_id",updatable=true),
 	 	inverseJoinColumns = @JoinColumn(name = "authority_id",updatable=true))
@@ -122,5 +122,17 @@ public class User{
 	public void setAuthorities(Set<Authority> authorities) {
 		this.authorities = authorities;
 	}
+
+	@Override
+	public String toString() {
+		return "User [userId=" + userId + ", username=" + username + ", password=" + password + ", email=" + email
+				+ ", firstName=" + firstName + ", lastName=" + lastName + ", authorities=" + authorities
+				+ ", getUserId()=" + getUserId() + ", getUsername()=" + getUsername() + ", getPassword()="
+				+ getPassword() + ", getEmail()=" + getEmail() + ", getFirstName()=" + getFirstName()
+				+ ", getLastName()=" + getLastName() + ", getAuthorities()=" + getAuthorities() + ", getClass()="
+				+ getClass() + ", hashCode()=" + hashCode() + ", toString()=" + super.toString() + "]";
+	}
+
+	
 	
 }

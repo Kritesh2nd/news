@@ -1,22 +1,26 @@
 package com.exm.news.service;
 
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import java.security.Key;
+import io.jsonwebtoken.SignatureAlgorithm;
+
+import java.util.Map;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Function;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
+import java.security.Key;
+
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Value;
+
+import com.exm.news.security.authentication.UserAuth;
 
 @Service
 public class JwtService {
+	
     @Value("${security.jwt.secret-key}")
     private String secretKey;
 
@@ -32,40 +36,36 @@ public class JwtService {
         return claimsResolver.apply(claims);
     }
 
-    public String generateToken(UserDetails userDetails) {
-        return generateToken(new HashMap<>(), userDetails);
+    public String generateToken(UserAuth userAuth) {
+        return generateToken(new HashMap<>(), userAuth);
     }
 
-    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
-        return buildToken(extraClaims, userDetails, jwtExpiration);
+    public String generateToken(Map<String, Object> extraClaims, UserAuth userAuth) {
+        return buildToken(extraClaims, userAuth, jwtExpiration);
     }
 
     public long getExpirationTime() {
         return jwtExpiration;
     }
 
-    private String buildToken(
-            Map<String, Object> extraClaims,
-            UserDetails userDetails,
-            long expiration
-    ) {
+    private String buildToken(Map<String, Object> extraClaims, UserAuth userAuth, long expiration) {
     	
         return Jwts
                 .builder()
                 .setClaims(extraClaims)
-                .setSubject(userDetails.getUsername())
+                .setSubject(userAuth.getEmail())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    public boolean isTokenValid(String token, UserDetails userDetails) {
+    public boolean isTokenValid(String token, UserAuth userAuth) {
         final String email = extractEmail(token);
-        return (email.equals(userDetails.getUsername())) && !isTokenExpired(token);
+        return (email.equals(userAuth.getEmail())) && !isTokenExpired(token);
     }
 
-    private boolean isTokenExpired(String token) {
+    public boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 

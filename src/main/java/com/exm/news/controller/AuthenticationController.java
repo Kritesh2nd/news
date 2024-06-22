@@ -1,24 +1,18 @@
 package com.exm.news.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.exm.news.constant.PathConstant;
-import com.exm.news.dto.user.LoginUserDto;
-import com.exm.news.dto.user.RegisterUserDto;
-import com.exm.news.model.User;
-import com.exm.news.response.BasicResponseDto;
-import com.exm.news.response.LoginResponse;
-import com.exm.news.service.JwtService;
 import com.exm.news.service.UserService;
+import com.exm.news.constant.PathConstant;
+import com.exm.news.response.LoginResponse;
+import com.exm.news.dto.user.RegisterUserDto;
+import com.exm.news.response.BasicResponseDto;
 
 @RestController
 @RequestMapping("/")
@@ -27,12 +21,19 @@ public class AuthenticationController {
 	@Autowired
 	private UserService userService;
 	
-	@Autowired
-	private JwtService jwtService;
+	@GetMapping("admin")
+	public String admin() {
+		return "Admin access";
+	}
 	
-	@GetMapping("/cat")
-	public String cat() {
-		return "Auth cat";
+	@GetMapping("editor")
+	public String editor() {
+		return "Editor access";
+	}
+	
+	@GetMapping("reader")
+	public String reader() {
+		return "Reader access";
 	}
 	
 	@PostMapping(PathConstant.SIGNUP)
@@ -41,28 +42,14 @@ public class AuthenticationController {
     }
 
     @PostMapping(PathConstant.LOGIN)
-    public ResponseEntity<LoginResponse> authenticate(@RequestBody LoginUserDto loginUserDto) {
-        
-    	UserDetails userDetail = userService.authenticate(loginUserDto);
-        String jwtToken = jwtService.generateToken(userDetail);
-
-        LoginResponse loginResponse = new LoginResponse();
-        
-        loginResponse.setToken(jwtToken);
-        loginResponse.setExpiresIn(jwtService.getExpirationTime());
-
-        return ResponseEntity.ok(loginResponse);
+    public ResponseEntity<LoginResponse> authenticate() {
+    	return ResponseEntity.ok(userService.getUserToken());
     }
     
     @GetMapping(PathConstant.ME)
     public ResponseEntity<?> authenticatedUser() {
-		System.out.println("authenticatedUser me");
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        System.out.println("authentication.getPrincipal() me: "+authentication.getPrincipal());
-        User currentUser = (User) authentication.getPrincipal();
-
-        return ResponseEntity.ok(currentUser);
+    	System.out.println("controller get me");
+        return ResponseEntity.ok(userService.getMe());
     }
 
 }

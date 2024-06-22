@@ -27,6 +27,12 @@ public class Authority {
 
 	public Authority() {}
 	
+	public Authority(String name, Set<User> users) {
+		super();
+		this.name = name;
+		this.users = users;
+	}
+	
 	public Authority(Long id, String name, Set<User> users) {
 		super();
 		this.id = id;
@@ -57,5 +63,6 @@ public class Authority {
 	public void setUsers(Set<User> users) {
 		this.users = users;
 	}
+
 	
 }

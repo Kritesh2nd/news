@@ -8,9 +8,7 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,14 +16,17 @@ import org.springframework.stereotype.Service;
 import com.exm.news.dto.user.GeneralUserDto;
 import com.exm.news.dto.user.LoginUserDto;
 import com.exm.news.dto.user.RegisterUserDto;
+import com.exm.news.dto.user.UpdateAuthorityDto;
 import com.exm.news.model.Authority;
 import com.exm.news.model.User;
+import com.exm.news.repository.AuthorityRepository;
 import com.exm.news.repository.UserRepository;
 import com.exm.news.response.BasicResponseDto;
+import com.exm.news.response.LoginResponse;
 import com.exm.news.security.authentication.UserAuth;
-import com.exm.news.security.manager.AuthManager;
-import com.exm.news.security.provider.AuthProvider;
+import com.exm.news.security.provider.BasicAuthProvider;
 import com.exm.news.service.interfaces.UserServiceInterfaces;
+
 
 @Service
 public class UserService implements UserServiceInterfaces{
@@ -37,16 +38,30 @@ public class UserService implements UserServiceInterfaces{
 	private UserRepository userRepository;
 	
 	@Autowired
+	private AuthorityRepository authorityRepository;
+	
+	@Autowired
     private PasswordEncoder passwordEncoder;
 	
 	@Autowired
-	private AuthProvider authProvider;
+	private BasicAuthProvider authProvider;
+	
+	@Autowired
+	private JwtService jwtService;
 	
 	@Override
 	public List<GeneralUserDto> getGeneralUserList() {
 		List<User> userList = userRepository.findAll();
 		List<GeneralUserDto> generalUserList = userList.stream()
-				.map(user -> modelMapper.map(user, GeneralUserDto.class))
+				.map(user -> {
+					Set<Authority> authorities = user.getAuthorities();
+					GeneralUserDto generalUser = modelMapper.map(user, GeneralUserDto.class);
+					List<String> authorityNames = authorities.stream()
+			                .map(Authority::getName)
+			                .collect(Collectors.toList());
+					generalUser.setRole(authorityNames);
+					return generalUser;
+				})
 				.collect(Collectors.toList());
 
 		return generalUserList;
@@ -55,16 +70,25 @@ public class UserService implements UserServiceInterfaces{
 	@Override
 	public GeneralUserDto getGeneralUserById(Long id) {
 		User user = getUserById(id);
-
+		System.out.println("user: "+user.getAuthorities().size());
+		
 		GeneralUserDto generalUser = modelMapper.map(user, GeneralUserDto.class);
+		
+		Set<Authority> authorities = user.getAuthorities();
+		
+		List<String> authorityNames = authorities.stream()
+                .map(Authority::getName)
+                .collect(Collectors.toList());
 
+		generalUser.setRole(authorityNames);
+		
 		return generalUser;
 	}
 	
 	@Override
-	public UserDetails authenticate(LoginUserDto input) {
+	public UserAuth authenticate(LoginUserDto input) {
 		
-		Authentication userAuth = modelMapper.map(input, Authentication.class);
+		UserAuth userAuth = modelMapper.map(input, UserAuth.class);
 		
 		UserAuth auth = (UserAuth) authProvider.authenticate(userAuth);
 		
@@ -73,14 +97,11 @@ public class UserService implements UserServiceInterfaces{
 		}
 		
 		User registeredUser = userRepository.findUserByEmail(auth.getEmail());
-		UserDetails userDetail = modelMapper.map(registeredUser, UserDetails.class);
+		
+		UserAuth userDetail = modelMapper.map(registeredUser, UserAuth.class);
 		
 		return userDetail;
 	}
-	
-	
-	
-	
 
 	@Override
 	public BasicResponseDto signup(RegisterUserDto newUser) {
@@ -91,26 +112,18 @@ public class UserService implements UserServiceInterfaces{
 			return new BasicResponseDto("User with this email already exits.",false);
 		}
 
+		User user = modelMapper.map(newUser, User.class);		
 		
-		User user = modelMapper.map(newUser, User.class);
+		Set<Authority> userAuthorities = new HashSet<Authority>();
+		Authority userAuthority = authorityRepository.findAuthorityByName("reader");
+		userAuthorities.add(userAuthority);
+		user.setAuthorities(userAuthorities);
 		
 		String encryptedPassword = encodePassword(user.getPassword());
 		user.setPassword(encryptedPassword);
 		
-//		adding user without authority
 		userRepository.save(user);
-		
-		Set<User> userSet = new HashSet<User>();
-		User newAddedUser = userRepository.findUserByEmail(newUser.getEmail());
-		userSet.add(newAddedUser);
-		
-		Set<Authority> authoritySet = new HashSet<Authority>();
-		Authority auth = new Authority(Long.valueOf(1),"user",userSet);		
-		authoritySet.add(auth);
-		
-//		updating previously added used by adding new authority
-		user.setAuthorities(authoritySet);
-		
+				
 		return new BasicResponseDto("New user added successfully.",true);
 	}
 
@@ -126,7 +139,6 @@ public class UserService implements UserServiceInterfaces{
 			userRepository.save(updatedUser);
 		}
 		catch(Exception e) {
-//			return new BasicResponseDto (String.format("Unable to update user for id %f", newUserData.getUserId()),false);
 			return new BasicResponseDto ("Unable to update user for id: "+ newUserData.getUserId(),false);
 		}
 		return new BasicResponseDto("User updated successfully.",true);
@@ -157,6 +169,84 @@ public class UserService implements UserServiceInterfaces{
 		return new BasicResponseDto("All users deleted successfully.",true);
 	}
 		
+	
+	@Override
+	public LoginResponse getUserToken() {
+		UserAuth userAuth = (UserAuth) SecurityContextHolder.getContext().getAuthentication();
+		
+		if(userAuth == null) {
+			throw new RuntimeException("userAuth null, cannot make token");
+		}
+		
+		String jwtToken = jwtService.generateToken(userAuth);
+		LoginResponse loginResponse = new LoginResponse();
+    	loginResponse.setToken(jwtToken);
+    	loginResponse.setExpiresIn(jwtService.getExpirationTime());
+		
+		return loginResponse;
+	}
+	
+	
+	@Override
+	public BasicResponseDto updateUserAuthority(UpdateAuthorityDto userAuthority) {
+		try {
+			User user = getUserById(userAuthority.getUserId());
+			
+			Set<Authority> userAuthorities = user.getAuthorities();
+			Authority newUserAuthority = authorityRepository.findAuthorityByName("editor");
+			userAuthorities.add(newUserAuthority);
+			user.setAuthorities(userAuthorities);
+
+			userRepository.save(user);
+		}
+		catch(Exception e) {
+			return new BasicResponseDto ("Unable to update user authority for id: "+ userAuthority.getUserId(),false);
+		}
+		return new BasicResponseDto("User authority updated successfully.",true);
+	}
+
+	@Override
+	public BasicResponseDto removeUserAuthority(UpdateAuthorityDto userAuthority) {
+		try {
+			User user = getUserById(userAuthority.getUserId());
+			
+			Set<Authority> userAuthorities = user.getAuthorities();
+			Authority newUserAuthority = authorityRepository.findAuthorityByName("editor");
+			userAuthorities.remove(newUserAuthority);
+			user.setAuthorities(userAuthorities);
+
+			userRepository.save(user);
+		}
+		catch(Exception e) {
+			return new BasicResponseDto ("Unable to remove user authority for id: "+ userAuthority.getUserId(),false);
+		}
+		return new BasicResponseDto("User authority removed successfully.",true);
+	}
+	
+	public GeneralUserDto getMe() {
+		System.out.println("getMe() [1]");
+		UserAuth userAuth = (UserAuth) SecurityContextHolder.getContext().getAuthentication();
+		
+//		System.out.println("userAuth in service: "+userAuth.toString());
+		if(userAuth == null) {
+			return null;
+		}
+		User user = userRepository.findUserByEmail(userAuth.getEmail());
+		
+		GeneralUserDto generalUser = modelMapper.map(user, GeneralUserDto.class);
+		System.out.println("getMe() [2]");
+		Set<Authority> authorities = user.getAuthorities();
+		
+		List<String> authorityNames = authorities.stream()
+                .map(Authority::getName)
+                .collect(Collectors.toList());
+
+		generalUser.setRole(authorityNames);
+		
+		return generalUser;
+		
+	}
+	
 	public User getUserById(Long id) {
 		User user = userRepository.findUserById(id);
 		if(user == null) {
@@ -169,6 +259,8 @@ public class UserService implements UserServiceInterfaces{
         return passwordEncoder.encode(rawPassword);
     }
 
+
+	
 }
 
 

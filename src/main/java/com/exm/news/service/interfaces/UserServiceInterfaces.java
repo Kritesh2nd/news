@@ -7,14 +7,20 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.exm.news.dto.user.GeneralUserDto;
 import com.exm.news.dto.user.LoginUserDto;
 import com.exm.news.dto.user.RegisterUserDto;
+import com.exm.news.dto.user.UpdateAuthorityDto;
+import com.exm.news.model.Authority;
+import com.exm.news.model.User;
 import com.exm.news.response.BasicResponseDto;
+import com.exm.news.response.LoginResponse;
+import com.exm.news.security.authentication.UserAuth;
 
 public interface UserServiceInterfaces {
 
 //	C[R]UD
 	public List<GeneralUserDto> getGeneralUserList();
 	public GeneralUserDto getGeneralUserById(Long id);
-	public UserDetails authenticate(LoginUserDto input);	
+	public UserAuth authenticate(LoginUserDto input);
+	public LoginResponse getUserToken();
 	
 //	[C]RUD
 	public BasicResponseDto signup(RegisterUserDto input);
@@ -22,11 +28,12 @@ public interface UserServiceInterfaces {
 //	CR[U]D
 	public BasicResponseDto updateUser(GeneralUserDto newUserData);
 	public BasicResponseDto updateUserPassword(Long id,String password);
+	public BasicResponseDto updateUserAuthority(UpdateAuthorityDto userAuthority);
 	
 //	CRU[D]
 	public BasicResponseDto deleteUser(Long id);
 	public BasicResponseDto deleteAllUsers();
-	
+	public BasicResponseDto removeUserAuthority(UpdateAuthorityDto userAuthority);
 	
 	
 }
