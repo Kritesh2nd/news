@@ -77,5 +77,12 @@ public class GeneralUserDto {
 	public void setRole(List<String> role) {
 		this.role = role;
 	}
+
+	@Override
+	public String toString() {
+		return "GeneralUserDto [userId=" + userId + ", username=" + username + ", email=" + email + ", firstName="
+				+ firstName + ", lastName=" + lastName + ", role=" + role + "]";
+	}
     
+	
 }

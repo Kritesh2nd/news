@@ -7,7 +7,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.exm.news.exception.ProcessNotAllowedException;
 import com.exm.news.model.Category;
 import com.exm.news.repository.CategoryRepository;
 import com.exm.news.response.BasicResponseDto;
@@ -90,7 +89,7 @@ public class CategoryService implements CategoryServiceInterface{
 		
 		if(deleteCategory == null) {
 			//TODO use of custom exception
-			throw new ProcessNotAllowedException("Category not found");
+			throw new NoSuchElementException("Category not found");
 		}
 		
 		categoryRepository.delete(deleteCategory);

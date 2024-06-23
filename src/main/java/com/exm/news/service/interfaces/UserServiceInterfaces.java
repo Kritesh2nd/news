@@ -2,16 +2,12 @@ package com.exm.news.service.interfaces;
 
 import java.util.List;
 
-import org.springframework.security.core.userdetails.UserDetails;
-
-import com.exm.news.dto.user.GeneralUserDto;
 import com.exm.news.dto.user.LoginUserDto;
-import com.exm.news.dto.user.RegisterUserDto;
-import com.exm.news.dto.user.UpdateAuthorityDto;
-import com.exm.news.model.Authority;
-import com.exm.news.model.User;
-import com.exm.news.response.BasicResponseDto;
 import com.exm.news.response.LoginResponse;
+import com.exm.news.dto.user.GeneralUserDto;
+import com.exm.news.dto.user.RegisterUserDto;
+import com.exm.news.response.BasicResponseDto;
+import com.exm.news.dto.user.UpdateAuthorityDto;
 import com.exm.news.security.authentication.UserAuth;
 
 public interface UserServiceInterfaces {
@@ -34,6 +30,5 @@ public interface UserServiceInterfaces {
 	public BasicResponseDto deleteUser(Long id);
 	public BasicResponseDto deleteAllUsers();
 	public BasicResponseDto removeUserAuthority(UpdateAuthorityDto userAuthority);
-	
 	
 }

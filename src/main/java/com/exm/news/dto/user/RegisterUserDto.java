@@ -1,18 +1,24 @@
 package com.exm.news.dto.user;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
 public class RegisterUserDto {
 
-//	TODO remove unnecessary tags
+	@NotBlank(message = "input field cannot be blank")
     private String username;
 
+    @Email(message = "invalid email format")
     private String email;
  
+    @NotBlank(message = "input field cannot be blank")
     private String firstName;
 
+    @NotBlank(message = "input field cannot be blank")
     private String lastName;
  
+    @NotBlank(message = "input field cannot be blank")
     private String password;
-
 
     public RegisterUserDto() {}
 	

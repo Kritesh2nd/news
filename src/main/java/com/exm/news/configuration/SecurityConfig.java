@@ -3,6 +3,7 @@ package com.exm.news.configuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
@@ -13,6 +14,7 @@ import com.exm.news.security.filter.BasicAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 
 	@Autowired
@@ -34,11 +36,8 @@ public class SecurityConfig {
 						
 						.requestMatchers("/signup").permitAll()
 //						.requestMatchers("/login").permitAll()
-						.requestMatchers("/me").hasAnyAuthority("editor")
 						
 						.requestMatchers("/user/list").permitAll()
-						.requestMatchers("/user/updateAuthority").hasAnyAuthority("admin")
-						.requestMatchers("/user/deleteAuthority").hasAnyAuthority("admin")
 						
 						.requestMatchers("/article/listAll").permitAll()
 						.requestMatchers("/article/{id}").permitAll()
@@ -48,14 +47,7 @@ public class SecurityConfig {
 						.requestMatchers("/article/listByDateAndCategory").permitAll()
 						.requestMatchers("/article/listByDateRangeWithCategory").permitAll()
 						
-						.requestMatchers("/article/add").hasAnyAuthority("admin","editor")
-						.requestMatchers("/article/edit").hasAnyAuthority("admin","editor")
-						.requestMatchers("/article/delete").hasAnyAuthority("admin","editor")
-						
-						
-						.requestMatchers("/admin").hasAnyAuthority("admin")
-						.requestMatchers("/editor").hasAnyAuthority("admin","editor")
-						.requestMatchers("/reader").hasAnyAuthority("admin","editor","reader")
+							
 						
 				        .anyRequest().authenticated()
 				)

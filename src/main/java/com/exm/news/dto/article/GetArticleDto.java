@@ -1,15 +1,20 @@
 package com.exm.news.dto.article;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class GetArticleDto {
 	
+	@NotBlank(message = "input field cannot be blank")
     private String title;
     
     private String shortContent;
     
     private String imageUrl;
     
+	@NotBlank(message = "input field cannot be blank")
     private String content;
     
+	@NotBlank(message = "input field cannot be blank")
     private String category;
 
     public GetArticleDto() {}

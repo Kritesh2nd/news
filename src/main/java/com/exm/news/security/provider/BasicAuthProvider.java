@@ -53,8 +53,11 @@ public class BasicAuthProvider implements AuthenticationProvider{
 					
 			return new UserAuth(true, user.getEmail(), null, null, authorityList);
 		}
+		
+		return new UserAuth(true, user.getEmail(), null, null, null);
 	
-		throw new BadCredentialsException("Bad Credentials Exception");
+//		throw new BadCredentialsException("Bad Credentials Exception");
+//		throw new UsernameNotFoundException("username not found");
 	}
 
 	@Override

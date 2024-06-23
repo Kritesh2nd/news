@@ -4,10 +4,15 @@ import java.io.IOException;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.exm.news.service.JwtService;
+
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.security.SignatureException;
+
 import com.exm.news.security.manager.AuthManager;
 import com.exm.news.security.authentication.UserAuth;
 
@@ -24,6 +29,11 @@ public class BearerTokenFilter extends OncePerRequestFilter{
 	
 	@Autowired
 	private JwtService jwtService;
+	
+//	@Autowired
+//	private HandlerExceptionResolver exceptionResolver;
+
+	 
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -53,8 +63,10 @@ public class BearerTokenFilter extends OncePerRequestFilter{
 					SecurityContextHolder.getContext().setAuthentication(auth);
 				}
 			}
-			catch(Exception e) {
+			catch(ExpiredJwtException | SignatureException e) {
 				System.out.println("expired token, error: "+e);
+//				exceptionResolver.resolveException(request, response, null, e);
+				
 			}
 			
             System.out.println("bearer token[000]");

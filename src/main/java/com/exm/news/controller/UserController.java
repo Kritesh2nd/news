@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,36 +32,43 @@ public class UserController {
 		return new ResponseEntity<String>("Cat User",HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasAnyAuthority('admin','reader')")
 	@GetMapping(PathConstant.LIST)
 	public ResponseEntity<List<GeneralUserDto>> userList(){
 		return new ResponseEntity<List<GeneralUserDto>>(userService.getGeneralUserList(),HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasAnyAuthority('admin')")
 	@GetMapping(PathConstant.GET_BY_ID)
 	public ResponseEntity<GeneralUserDto> getUserById(@PathVariable Long id){
 		return new ResponseEntity<GeneralUserDto>(userService.getGeneralUserById(id),HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasAnyAuthority('admin')")
 	@PostMapping(PathConstant.UPDATE)
 	public ResponseEntity<BasicResponseDto> updateUser(@RequestBody GeneralUserDto user){
 		return new ResponseEntity<BasicResponseDto>(userService.updateUser(user),HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasAnyAuthority('admin')")
 	@PostMapping(PathConstant.UPDATE_ROLE)
 	public ResponseEntity<BasicResponseDto> updateUserRole(@RequestBody UpdateAuthorityDto userAuthority){
 		return new ResponseEntity<BasicResponseDto>(userService.updateUserAuthority(userAuthority),HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasAnyAuthority('admin')")
 	@PostMapping(PathConstant.DELETE_ALL)
 	public ResponseEntity<BasicResponseDto> deleteAll(){
 		return new ResponseEntity<BasicResponseDto>(userService.deleteAllUsers(),HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasAnyAuthority('admin')")
 	@PostMapping(PathConstant.DELETE_BY_ID)
 	public ResponseEntity<BasicResponseDto> deleteById(@PathVariable Long id){
 		return new ResponseEntity<BasicResponseDto>(userService.deleteUser(id),HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasAnyAuthority('admin')")
 	@PostMapping(PathConstant.DELETE_ROLE)
 	public ResponseEntity<BasicResponseDto> deleteUserRole(@RequestBody UpdateAuthorityDto userAuthority){
 		return new ResponseEntity<BasicResponseDto>(userService.removeUserAuthority(userAuthority),HttpStatus.OK);
