@@ -87,20 +87,26 @@ public class UserService implements UserServiceInterfaces{
 	
 	@Override
 	public UserAuth authenticate(LoginUserDto input) {
-		
+		System.out.println("longinnnnn");
 		UserAuth userAuth = modelMapper.map(input, UserAuth.class);
-		
-		UserAuth auth = (UserAuth) authProvider.authenticate(userAuth);
-		
-		if(!auth.isAuthenticated()) {
-			throw new UsernameNotFoundException("Username not found"); 
+		try {
+			UserAuth auth = (UserAuth) authProvider.authenticate(userAuth);
+			if(!auth.isAuthenticated()) {
+				throw new UsernameNotFoundException("Username not found"); 
+			}
+			User registeredUser = userRepository.findUserByEmail(auth.getEmail());
+			
+			UserAuth userDetail = modelMapper.map(registeredUser, UserAuth.class);
+			
+			return userDetail;
+		}
+		catch(Exception e) {
+			System.out.println("exc: "+e);
 		}
 		
-		User registeredUser = userRepository.findUserByEmail(auth.getEmail());
 		
-		UserAuth userDetail = modelMapper.map(registeredUser, UserAuth.class);
+		return null;
 		
-		return userDetail;
 	}
 
 	@Override

@@ -8,8 +8,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.exm.news.model.User;
 import com.exm.news.model.Authority;
@@ -34,13 +32,11 @@ public class BasicAuthProvider implements AuthenticationProvider{
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 		
 		UserAuth basicUserAuth = (UserAuth) authentication;
-		
-		System.out.println("BasicAuthProvider, basicUserAuth: "+basicUserAuth.getEmail());
+	
 		User user = userRespository.findUserByEmail(basicUserAuth.getEmail());
 		
-		
 		if(user == null) {
-			throw new UsernameNotFoundException("username not found");
+			return new UserAuth(false, null, null, null, null);
 		}
 		
 		if(passwordEncoder.matches(basicUserAuth.getPassword(), user.getPassword())) {
@@ -53,16 +49,13 @@ public class BasicAuthProvider implements AuthenticationProvider{
 					
 			return new UserAuth(true, user.getEmail(), null, null, authorityList);
 		}
-		
-		return new UserAuth(true, user.getEmail(), null, null, null);
-	
-//		throw new BadCredentialsException("Bad Credentials Exception");
-//		throw new UsernameNotFoundException("username not found");
+
+		return new UserAuth(false, user.getEmail(), null, null, null);
 	}
 
+	
 	@Override
 	public boolean supports(Class<?> authentication) {
 		return UserAuth.class.equals(authentication);
 	}
-	
 }

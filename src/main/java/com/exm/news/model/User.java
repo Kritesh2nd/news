@@ -25,7 +25,7 @@ public class User{
     private Long userId;
 
 	@NotBlank(message="please enter data")
-    @Column(name = "username", nullable = false, unique = true)
+    @Column(name = "username", nullable = false)
     private String username;
 
 	@NotBlank(message="please enter data")

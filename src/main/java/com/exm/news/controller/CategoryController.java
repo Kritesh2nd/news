@@ -55,7 +55,7 @@ public class CategoryController {
 	
 	@PreAuthorize("hasAnyAuthority('admin')")
 	@PostMapping(PathConstant.ADD_ALL)
-	public ResponseEntity<BasicResponseDto> addCategories(@RequestBody @NotBlank(message="input field cannot be blank") List<String> category){
+	public ResponseEntity<BasicResponseDto> addCategories(@RequestBody List<String> category){
 		return new ResponseEntity<BasicResponseDto>(categoryService.addAllCategories(category),HttpStatus.OK);
 	}
 	

@@ -52,7 +52,7 @@ public class CategoryService implements CategoryServiceInterface{
 
 	@Override
 	public BasicResponseDto addAllCategories(List<String> category) {
-		
+		System.out.println("category: "+category);
 		for(String c : category) {
 			addCategory(c);
 		}
