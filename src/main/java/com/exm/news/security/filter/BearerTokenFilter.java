@@ -8,6 +8,7 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.exm.news.service.JwtService;
 
@@ -38,16 +39,13 @@ public class BearerTokenFilter extends OncePerRequestFilter{
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException, SignatureException, ExpiredJwtException {
 		
-		System.out.println("Token +");
 		final String authHeader = request.getHeader("Authorization");
 		
-		System.out.println("authHeader: "+authHeader);
 		if(authHeader == null) {
 			filterChain.doFilter(request, response);
 			return;
 		}
 		
-		System.out.println("Token ++");
 		if(authHeader.startsWith("Bearer ")) {
 			try {
 			
@@ -56,10 +54,7 @@ public class BearerTokenFilter extends OncePerRequestFilter{
 				final String userEmail = jwtService.extractEmail(jwt);
 				
 				UserAuth userAuth = new UserAuth(false, userEmail,null,jwt,null);
-				
 				UserAuth auth = (UserAuth) authManager.authenticate(userAuth);
-				
-				System.out.println("auth.isAuthenticated(): "+auth.isAuthenticated() );
 				
 				if(auth.isAuthenticated()) {				
 					SecurityContextHolder.getContext().setAuthentication(auth);
@@ -70,12 +65,11 @@ public class BearerTokenFilter extends OncePerRequestFilter{
 					return;
 				}
 			}
-			catch(ExpiredJwtException | SignatureException e) {
+			catch(UsernameNotFoundException | ExpiredJwtException | SignatureException e) {
 				handlerExceptionResolver.resolveException(request, response, null, e);
 				return;
 			}
 		}
-		System.out.println("Token +++");
 		filterChain.doFilter(request, response);
 		
 	}

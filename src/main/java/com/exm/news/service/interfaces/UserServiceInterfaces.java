@@ -8,6 +8,7 @@ import com.exm.news.dto.user.GeneralUserDto;
 import com.exm.news.dto.user.RegisterUserDto;
 import com.exm.news.response.BasicResponseDto;
 import com.exm.news.dto.user.UpdateAuthorityDto;
+import com.exm.news.dto.user.UpdateUserDto;
 import com.exm.news.security.authentication.UserAuth;
 
 public interface UserServiceInterfaces {
@@ -22,13 +23,12 @@ public interface UserServiceInterfaces {
 	public BasicResponseDto signup(RegisterUserDto input);
 	
 //	CR[U]D
-	public BasicResponseDto updateUser(GeneralUserDto newUserData);
+	public BasicResponseDto updateUser(UpdateUserDto newUserData);
 	public BasicResponseDto updateUserPassword(Long id,String password);
 	public BasicResponseDto updateUserAuthority(UpdateAuthorityDto userAuthority);
 	
 //	CRU[D]
-	public BasicResponseDto deleteUser(Long id);
-	public BasicResponseDto deleteAllUsers();
+	public BasicResponseDto deleteMyAccount();
 	public BasicResponseDto removeUserAuthority(UpdateAuthorityDto userAuthority);
 	
 }

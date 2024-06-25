@@ -36,16 +36,20 @@ public class TokenAuthProvider implements AuthenticationProvider{
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 		
 		UserAuth userTokenAuth = (UserAuth) authentication;
-		
-		User user = userRespository.findUserByEmail(userTokenAuth.getEmail());
-		
-		if(user == null || userTokenAuth.getToken()==null) {
-			throw new UsernameNotFoundException("username or token not found");
+		User user  = userRespository.findUserByEmail(userTokenAuth.getEmail());
+			
+
+		if(user == null) {
+			throw new UsernameNotFoundException("user of given token not found");
+		}
+		if(userTokenAuth.getToken() == null) {
+			throw new UsernameNotFoundException("token not found");
 		}
 		
 		if(jwtService.isTokenExpired(userTokenAuth.getToken())) {
-			throw new UsernameNotFoundException("username or token not found");
+			throw new UsernameNotFoundException("token expired");
 		}
+
 		try {
 			if(jwtService.isTokenValid(userTokenAuth.getToken(), userTokenAuth)){
 				Set<GrantedAuthority> authoritySet = new HashSet<GrantedAuthority>(); 

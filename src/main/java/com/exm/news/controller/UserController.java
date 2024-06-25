@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.exm.news.constant.PathConstant;
 import com.exm.news.dto.user.GeneralUserDto;
 import com.exm.news.dto.user.UpdateAuthorityDto;
+import com.exm.news.dto.user.UpdateUserDto;
 import com.exm.news.response.BasicResponseDto;
 import com.exm.news.service.UserService;
 
@@ -32,7 +33,7 @@ public class UserController {
 		return new ResponseEntity<String>("Cat User",HttpStatus.OK);
 	}
 	
-	@PreAuthorize("hasAnyAuthority('admin','reader')")
+	@PreAuthorize("hasAnyAuthority('admin','editor')")
 	@GetMapping(PathConstant.LIST)
 	public ResponseEntity<List<GeneralUserDto>> userList(){
 		return new ResponseEntity<List<GeneralUserDto>>(userService.getGeneralUserList(),HttpStatus.OK);
@@ -44,9 +45,9 @@ public class UserController {
 		return new ResponseEntity<GeneralUserDto>(userService.getGeneralUserById(id),HttpStatus.OK);
 	}
 	
-	@PreAuthorize("hasAnyAuthority('admin')")
+	@PreAuthorize("hasAnyAuthority('admin','editor','reader')")
 	@PostMapping(PathConstant.UPDATE)
-	public ResponseEntity<BasicResponseDto> updateUser(@RequestBody GeneralUserDto user){
+	public ResponseEntity<BasicResponseDto> updateUser(@RequestBody UpdateUserDto user){
 		return new ResponseEntity<BasicResponseDto>(userService.updateUser(user),HttpStatus.OK);
 	}
 	
@@ -56,16 +57,10 @@ public class UserController {
 		return new ResponseEntity<BasicResponseDto>(userService.updateUserAuthority(userAuthority),HttpStatus.OK);
 	}
 	
-	@PreAuthorize("hasAnyAuthority('admin')")
-	@PostMapping(PathConstant.DELETE_ALL)
-	public ResponseEntity<BasicResponseDto> deleteAll(){
-		return new ResponseEntity<BasicResponseDto>(userService.deleteAllUsers(),HttpStatus.OK);
-	}
-	
-	@PreAuthorize("hasAnyAuthority('admin')")
-	@PostMapping(PathConstant.DELETE_BY_ID)
-	public ResponseEntity<BasicResponseDto> deleteById(@PathVariable Long id){
-		return new ResponseEntity<BasicResponseDto>(userService.deleteUser(id),HttpStatus.OK);
+	@PreAuthorize("hasAnyAuthority('reader')")
+	@PostMapping(PathConstant.DELETE_ME)
+	public ResponseEntity<BasicResponseDto> deleteMyAccount(){
+		return new ResponseEntity<BasicResponseDto>(userService.deleteMyAccount(),HttpStatus.OK);
 	}
 	
 	@PreAuthorize("hasAnyAuthority('admin')")

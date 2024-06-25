@@ -150,8 +150,6 @@ public class ArticleService implements ArticleServiceInterface{
 		
 		generalArticleList = articleList.stream()
 				.map(article -> {
-					System.out.println("article");
-					System.out.println(article.getAuthor().toString());
 					return articleToArticleDto(article);
 				})
 				.collect(Collectors.toList());
@@ -165,7 +163,6 @@ public class ArticleService implements ArticleServiceInterface{
 	
 	@Override
 	public BasicResponseDto writeArticle(GetArticleDto newArticle) {
-		
 		Article article = modelMapper.map(newArticle, Article.class);
 		
 		UserAuth userAuth = (UserAuth) SecurityContextHolder.getContext().getAuthentication();
@@ -216,6 +213,11 @@ public class ArticleService implements ArticleServiceInterface{
 
 	@Override
 	public BasicResponseDto editArticle(ArticleDto newArticle) {
+		Article updateArticle = getArticleById(newArticle.getArticleId());
+		
+		if(updateArticle==null) {
+			System.out.println();
+		}
 		Article article = modelMapper.map(newArticle, Article.class);
 		
 		UserAuth userAuth = (UserAuth) SecurityContextHolder.getContext().getAuthentication();
@@ -250,7 +252,6 @@ public class ArticleService implements ArticleServiceInterface{
 	}
 	
 	public boolean checkValidDate(String dateStr) {
-		
 		String dateFormat = "yyyy-MM-dd";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat);
         

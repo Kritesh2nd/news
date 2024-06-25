@@ -67,5 +67,11 @@ public class GetArticleDto {
 	public void setCategory(String category) {
 		this.category = category;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "GetArticleDto [title=" + title + ", shortContent=" + shortContent + ", imageUrl=" + imageUrl
+				+ ", content=" + content + ", category=" + category + "]";
+	}
+
 }

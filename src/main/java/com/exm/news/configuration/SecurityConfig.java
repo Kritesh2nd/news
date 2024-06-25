@@ -35,10 +35,6 @@ public class SecurityConfig {
 				.authorizeHttpRequests(authorize -> authorize
 						
 						.requestMatchers("/signup").permitAll()
-//						.requestMatchers("/login").permitAll()
-						
-						.requestMatchers("/user/list").permitAll()
-						
 						.requestMatchers("/article/listAll").permitAll()
 						.requestMatchers("/article/{id}").permitAll()
 						.requestMatchers("/article/listByDate").permitAll()
@@ -47,13 +43,9 @@ public class SecurityConfig {
 						.requestMatchers("/article/listByDateAndCategory").permitAll()
 						.requestMatchers("/article/listByDateRangeWithCategory").permitAll()
 						
-							
-						
 				        .anyRequest().authenticated()
 				)
-				
 				.build();
 	}
 
-	// add constructor getter setter
 }

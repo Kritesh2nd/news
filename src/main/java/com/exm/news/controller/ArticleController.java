@@ -68,7 +68,6 @@ public class ArticleController {
 	
 	@GetMapping(PathConstant.LIST_BY_DATE_RANGES)
 	public ResponseEntity<List<ArticleDto>> findArticleByTwoDates(@RequestBody GetTwoDatesWithCategory twoDateCategory){
-		System.out.println("Controller LIST_BY_Date_RANGES");
 		return new ResponseEntity<List<ArticleDto>>(articleService.listArticleByTwoDates(twoDateCategory),HttpStatus.OK);
 	}
 	
@@ -100,14 +99,12 @@ public class ArticleController {
 	@PreAuthorize("hasAnyAuthority('admin','editor')")
 	@PostMapping(PathConstant.DELETE_BY_ID)
 	public ResponseEntity<BasicResponseDto> deleteById(@PathVariable Long id){
-		System.out.println("Controller delete");
 		return new ResponseEntity<BasicResponseDto>(articleService.deleteArticleById(id),HttpStatus.OK);
 	}
 	
 	@PreAuthorize("hasAnyAuthority('admin','editor')")
 	@PostMapping(PathConstant.DELETE_ALL)
 	public ResponseEntity<BasicResponseDto> deleteAll(){
-		System.out.println("Controller delete all");
 		return new ResponseEntity<BasicResponseDto>(articleService.deleteAllArticles(),HttpStatus.OK);
 	}
 	

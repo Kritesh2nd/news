@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,6 +19,7 @@ import com.exm.news.dto.user.GeneralUserDto;
 import com.exm.news.dto.user.LoginUserDto;
 import com.exm.news.dto.user.RegisterUserDto;
 import com.exm.news.dto.user.UpdateAuthorityDto;
+import com.exm.news.dto.user.UpdateUserDto;
 import com.exm.news.model.Authority;
 import com.exm.news.model.User;
 import com.exm.news.repository.AuthorityRepository;
@@ -70,7 +73,6 @@ public class UserService implements UserServiceInterfaces{
 	@Override
 	public GeneralUserDto getGeneralUserById(Long id) {
 		User user = getUserById(id);
-		System.out.println("user: "+user.getAuthorities().size());
 		
 		GeneralUserDto generalUser = modelMapper.map(user, GeneralUserDto.class);
 		
@@ -87,7 +89,6 @@ public class UserService implements UserServiceInterfaces{
 	
 	@Override
 	public UserAuth authenticate(LoginUserDto input) {
-		System.out.println("longinnnnn");
 		UserAuth userAuth = modelMapper.map(input, UserAuth.class);
 		try {
 			UserAuth auth = (UserAuth) authProvider.authenticate(userAuth);
@@ -101,17 +102,12 @@ public class UserService implements UserServiceInterfaces{
 			return userDetail;
 		}
 		catch(Exception e) {
-			System.out.println("exc: "+e);
+			throw new UsernameNotFoundException("User email not found");
 		}
-		
-		
-		return null;
-		
 	}
 
 	@Override
 	public BasicResponseDto signup(RegisterUserDto newUser) {
-//		TODO use of native query
 //		Using native query findUserByEmail()
 		User userWithEmail = userRepository.findUserByEmail(newUser.getEmail());
 		if(userWithEmail!=null) {
@@ -134,19 +130,34 @@ public class UserService implements UserServiceInterfaces{
 	}
 
 	@Override
-	public BasicResponseDto updateUser(GeneralUserDto newUserData) {
-		try {
-			User updatedUser = getUserById((Long) newUserData.getUserId());
-			updatedUser.setUsername(newUserData.getUsername());
-			updatedUser.setEmail(newUserData.getEmail());
-			updatedUser.setFirstName(newUserData.getFirstName());
-			updatedUser.setLastName(newUserData.getLastName());
-
-			userRepository.save(updatedUser);
+	public BasicResponseDto updateUser(UpdateUserDto newUserData) {
+		
+		UserAuth userAuth = (UserAuth) SecurityContextHolder.getContext().getAuthentication();
+		User updateThisUser = getUserById(newUserData.getUserId());
+		
+		if(userAuth == null || updateThisUser == null) {
+			throw new NoSuchElementException("User not found");
 		}
-		catch(Exception e) {
-			return new BasicResponseDto ("Unable to update user for id: "+ newUserData.getUserId(),false);
+		
+		User loggedInUser = userRepository.findUserByEmail(userAuth.getEmail());
+		User newUserEmail = userRepository.findUserByEmail(newUserData.getEmail());
+		
+		if(!loggedInUser.getUserId().equals(newUserData.getUserId())) {
+			throw new AccessDeniedException("Cannot update this user");
 		}
+		
+		if(newUserEmail == null) {
+			
+		}
+		else if(!newUserData.getEmail().equals(loggedInUser.getEmail()) && newUserData.getEmail().equals(newUserEmail.getEmail())) {
+			throw new DuplicateKeyException("Cannot update. This email already in use");
+		}
+		updateThisUser.setEmail(newUserData.getEmail());
+		updateThisUser.setFirstName(newUserData.getFirstName());
+		updateThisUser.setLastName(newUserData.getLastName());
+		updateThisUser.setUsername(newUserData.getUsername());
+		userRepository.save(updateThisUser);
+		
 		return new BasicResponseDto("User updated successfully.",true);
 	}
 
@@ -160,28 +171,26 @@ public class UserService implements UserServiceInterfaces{
 		return new BasicResponseDto("Password updated successfully.",true);
 	}
 
+	
 	@Override
-	public BasicResponseDto deleteUser(Long id) {
-		User deleteUser = getUserById(id);
-
+	public BasicResponseDto deleteMyAccount() {
+		UserAuth userAuth = (UserAuth) SecurityContextHolder.getContext().getAuthentication();
+		
+		if(userAuth == null) {
+			throw new NoSuchElementException("user not found, cannot delete the user account");
+		}
+		User deleteUser = userRepository.findUserByEmail(userAuth.getEmail());
 		userRepository.delete(deleteUser);
 
-		return new BasicResponseDto("User deleted successfully.",true);
+		return new BasicResponseDto("Your account is deleted successfully.",true);
 	}
-
-	@Override
-	public BasicResponseDto deleteAllUsers() {
-		userRepository.deleteAll();
-		return new BasicResponseDto("All users deleted successfully.",true);
-	}
-		
 	
 	@Override
 	public LoginResponse getUserToken() {
 		UserAuth userAuth = (UserAuth) SecurityContextHolder.getContext().getAuthentication();
 		
 		if(userAuth == null) {
-			throw new RuntimeException("userAuth null, cannot make token");
+			throw new NoSuchElementException("user not found, cannot make token");
 		}
 		
 		String jwtToken = jwtService.generateToken(userAuth);
@@ -230,17 +239,15 @@ public class UserService implements UserServiceInterfaces{
 	}
 	
 	public GeneralUserDto getMe() {
-		System.out.println("getMe() [1]");
 		UserAuth userAuth = (UserAuth) SecurityContextHolder.getContext().getAuthentication();
 		
-//		System.out.println("userAuth in service: "+userAuth.toString());
 		if(userAuth == null) {
 			return null;
 		}
 		User user = userRepository.findUserByEmail(userAuth.getEmail());
 		
 		GeneralUserDto generalUser = modelMapper.map(user, GeneralUserDto.class);
-		System.out.println("getMe() [2]");
+
 		Set<Authority> authorities = user.getAuthorities();
 		
 		List<String> authorityNames = authorities.stream()

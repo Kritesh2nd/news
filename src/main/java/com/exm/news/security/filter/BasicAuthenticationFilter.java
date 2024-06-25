@@ -33,31 +33,31 @@ public class BasicAuthenticationFilter extends OncePerRequestFilter{
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException, BadCredentialsException {
-		System.out.println("Basic +");
+		
 		final String authHeader = request.getHeader("Authorization");
-		System.out.println("authHeader: "+authHeader);
+
 		if(authHeader == null) {
 			filterChain.doFilter(request, response);
 			return;
 		}
-		System.out.println("Basic ++");
+
 		if(authHeader.startsWith("Basic ")) {
 			String username = extractUsernameAndPassword(authHeader)[0];
 			String password = extractUsernameAndPassword(authHeader)[1];
 			UserAuth ua = new UserAuth(false, username,password,null,null);
 			
 			UserAuth auth = (UserAuth) authManager.authenticate(ua);
-			System.out.println("auth.isAuthenticated(): "+auth.isAuthenticated());
+
 			if(auth.isAuthenticated()) {
 				SecurityContextHolder.getContext().setAuthentication(auth);
 			}
 			else {
-				handlerExceptionResolver.resolveException(request, response, null, new AccessDeniedException("bad credddd"));
+				handlerExceptionResolver.resolveException(request, response, null, new AccessDeniedException("Bad Credentials"));
 				return;
 			}
 		
 		}
-		System.out.println("Basic +++");
+
 		filterChain.doFilter(request, response);
 	}
 	

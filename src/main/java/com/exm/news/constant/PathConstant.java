@@ -22,6 +22,7 @@ public class PathConstant {
 	public static final String UPDATE_ROLE="updateAuthority";
 	public static final String DELETE_ALL="deleteAll";
 	public static final String DELETE_BY_ID="delete/{id}";
+	public static final String DELETE_ME="delete/me";
 	public static final String DELETE_ROLE="deleteAuthority";
 	
 	public static final String SIGNUP="signup";

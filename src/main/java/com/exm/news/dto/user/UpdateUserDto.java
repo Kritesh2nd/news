@@ -3,7 +3,10 @@ package com.exm.news.dto.user;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
-public class RegisterUserDto {
+public class UpdateUserDto {
+	
+	@NotBlank(message = "input field cannot be blank")
+    private Long userId;
 	
 	@NotBlank(message = "input field cannot be blank")
     private String username;
@@ -16,23 +19,28 @@ public class RegisterUserDto {
 
     @NotBlank(message = "input field cannot be blank")
     private String lastName;
- 
-    @NotBlank(message = "input field cannot be blank")
-    private String password;
 
-    public RegisterUserDto() {}
+    public UpdateUserDto() {}
 
-	public RegisterUserDto(@NotBlank(message = "input field cannot be blank") String username,
+	public UpdateUserDto(@NotBlank(message = "input field cannot be blank") Long userId,
+			@NotBlank(message = "input field cannot be blank") String username,
 			@Email(message = "invalid email format") String email,
 			@NotBlank(message = "input field cannot be blank") String firstName,
-			@NotBlank(message = "input field cannot be blank") String lastName,
-			@NotBlank(message = "input field cannot be blank") String password) {
+			@NotBlank(message = "input field cannot be blank") String lastName) {
 		super();
+		this.userId = userId;
 		this.username = username;
 		this.email = email;
 		this.firstName = firstName;
 		this.lastName = lastName;
-		this.password = password;
+	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
 	}
 
 	public String getUsername() {
@@ -67,12 +75,4 @@ public class RegisterUserDto {
 		this.lastName = lastName;
 	}
 
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-	
 }

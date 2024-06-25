@@ -56,7 +56,6 @@ public class AuthenticationController {
     @PreAuthorize("hasAnyAuthority('admin','editor','reader')")
     @GetMapping(PathConstant.ME)
     public ResponseEntity<?> authenticatedUser() {
-    	System.out.println("controller get me");
         return ResponseEntity.ok(userService.getMe());
     }
 

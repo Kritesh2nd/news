@@ -49,7 +49,6 @@ public class CategoryController {
 	@PreAuthorize("hasAnyAuthority('admin')")
 	@PostMapping(PathConstant.ADD)
 	public ResponseEntity<BasicResponseDto> addCategory(@RequestBody @NotBlank(message="input field cannot be blank") String category){
-		System.out.println("Controller add");
 		return new ResponseEntity<BasicResponseDto>(categoryService.addCategory(category),HttpStatus.OK);
 	}
 	
@@ -71,7 +70,7 @@ public class CategoryController {
 		return new ResponseEntity<BasicResponseDto>(categoryService.deleteAllCategories(),HttpStatus.OK);
 	}
 	
-	@PreAuthorize("hasAnyAuthority('admin')")
+	@PreAuthorize("hasAnyAuthority('admin','editor')")
 	@PostMapping(PathConstant.DELETE_BY_ID)
 	public ResponseEntity<BasicResponseDto> deleteById(@PathVariable Long id){
 		return new ResponseEntity<BasicResponseDto>(categoryService.deleteCategory(id),HttpStatus.OK);
