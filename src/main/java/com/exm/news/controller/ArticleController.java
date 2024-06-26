@@ -84,7 +84,7 @@ public class ArticleController {
 		return new ResponseEntity<BasicResponseDto>(articleService.writeArticle(article),HttpStatus.OK);
 	}
 	
-	@PreAuthorize("hasAnyAuthority('admin','editor')")
+	@PreAuthorize("hasAnyAuthopprity('admin','editor')")
 	@PostMapping(PathConstant.ADD_ALL)
 	public ResponseEntity<BasicResponseDto> writeAllArticle(@RequestBody List<GetArticleDto> articles){
 		return new ResponseEntity<BasicResponseDto>(articleService.writeAllArticle(articles),HttpStatus.OK);

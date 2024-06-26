@@ -50,7 +50,6 @@ public class BearerTokenFilter extends OncePerRequestFilter{
 			try {
 			
 				final String jwt = authHeader.substring(7);
-				
 				final String userEmail = jwtService.extractEmail(jwt);
 				
 				UserAuth userAuth = new UserAuth(false, userEmail,null,jwt,null);

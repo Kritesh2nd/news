@@ -32,6 +32,9 @@ public class AuthenticationController {
 	}
 	
 	@PreAuthorize("hasAnyAuthority('admin','editor')")
+	
+	
+	
 	@GetMapping("editor")
 	public String editor() {
 		return "Editor access";
