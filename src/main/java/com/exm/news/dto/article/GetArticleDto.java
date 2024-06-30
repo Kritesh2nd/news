@@ -1,15 +1,20 @@
 package com.exm.news.dto.article;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class GetArticleDto {
 	
+	@NotBlank(message = "input field cannot be blank")
     private String title;
     
     private String shortContent;
     
     private String imageUrl;
     
+	@NotBlank(message = "input field cannot be blank")
     private String content;
     
+	@NotBlank(message = "input field cannot be blank")
     private String category;
 
     public GetArticleDto() {}
@@ -62,5 +67,11 @@ public class GetArticleDto {
 	public void setCategory(String category) {
 		this.category = category;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "GetArticleDto [title=" + title + ", shortContent=" + shortContent + ", imageUrl=" + imageUrl
+				+ ", content=" + content + ", category=" + category + "]";
+	}
+
 }

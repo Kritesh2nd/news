@@ -8,23 +8,28 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.exm.news.dto.article.ArticleDto;
 import com.exm.news.dto.article.GetArticleDto;
 import com.exm.news.dto.article.GetDateAndCategory;
 import com.exm.news.dto.article.GetTwoDatesWithCategory;
+import com.exm.news.dto.user.GeneralUserDto;
 import com.exm.news.model.Article;
+import com.exm.news.model.Authority;
 import com.exm.news.model.Category;
 import com.exm.news.model.User;
 import com.exm.news.repository.ArticleRepository;
 import com.exm.news.repository.CategoryRepository;
 import com.exm.news.repository.UserRepository;
 import com.exm.news.response.BasicResponseDto;
+import com.exm.news.security.authentication.UserAuth;
 import com.exm.news.service.interfaces.ArticleServiceInterface;
 
 @Service		
@@ -47,18 +52,17 @@ public class ArticleService implements ArticleServiceInterface{
 		
 		List<Article> articleList = articleRepository.findAll();
 		List<ArticleDto> generalArticleList = articleList.stream()
-				.map(article -> modelMapper.map(article, ArticleDto.class))
+				.map(article -> articleToArticleDto(article))
 				.collect(Collectors.toList());
 		
 		return generalArticleList;
 	}
-
 	
 	@Override
 	public ArticleDto getArticleDtoById(Long id){
 		
 		Article article = getArticleById(id);
-		ArticleDto articleById = modelMapper.map(article, ArticleDto.class);
+		ArticleDto articleById = articleToArticleDto(article);
 		
 		return articleById;
 	}
@@ -72,7 +76,7 @@ public class ArticleService implements ArticleServiceInterface{
 		List<Article> articleList = articleRepository.findArticleByDate(dateTime);
 		
 		generalArticleList = articleList.stream()
-				.map(article -> modelMapper.map(article, ArticleDto.class))
+				.map(article -> articleToArticleDto(article))
 				.collect(Collectors.toList());
 
 		return generalArticleList;
@@ -89,7 +93,7 @@ public class ArticleService implements ArticleServiceInterface{
 		
 		List<Article> articleList = articleRepository.findArticleByCategory(category.getCategoryId());
 		List<ArticleDto> generalArticleList = articleList.stream()
-				.map(article -> modelMapper.map(article, ArticleDto.class))
+				.map(article -> articleToArticleDto(article))
 				.collect(Collectors.toList());
 		
 		return generalArticleList;
@@ -106,7 +110,7 @@ public class ArticleService implements ArticleServiceInterface{
 		
 		List<Article> articleList = articleRepository.findArticleByDateAndCategory(dateCategory.getDateTime(),category.getCategoryId());
 		List<ArticleDto> generalArticleList = articleList.stream()
-				.map(article -> modelMapper.map(article, ArticleDto.class))
+				.map(article -> articleToArticleDto(article))
 				.collect(Collectors.toList());
 		
 		return generalArticleList;
@@ -122,12 +126,11 @@ public class ArticleService implements ArticleServiceInterface{
 		List<Article> articleList = articleRepository.findArticleByTwoDates(twoDateCategory.getStartDate(),twoDateCategory.getEndDate());
 
 		generalArticleList = articleList.stream()
-				.map(article -> modelMapper.map(article, ArticleDto.class))
+				.map(article -> articleToArticleDto(article))
 				.collect(Collectors.toList());
 
 		return generalArticleList;
 	}
-
 
 	@Override
 	public List<ArticleDto> listArticleByTwoDatesWithCategory(GetTwoDatesWithCategory twoDateCategory) {
@@ -146,7 +149,9 @@ public class ArticleService implements ArticleServiceInterface{
 		List<Article> articleList = articleRepository.findArticleByTwoDatesWithCategory(twoDateCategory.getStartDate(),twoDateCategory.getEndDate(),category.getCategoryId());
 		
 		generalArticleList = articleList.stream()
-				.map(article -> modelMapper.map(article, ArticleDto.class))
+				.map(article -> {
+					return articleToArticleDto(article);
+				})
 				.collect(Collectors.toList());
 
 		return generalArticleList;
@@ -158,10 +163,12 @@ public class ArticleService implements ArticleServiceInterface{
 	
 	@Override
 	public BasicResponseDto writeArticle(GetArticleDto newArticle) {
-		
 		Article article = modelMapper.map(newArticle, Article.class);
 		
-		User articleAuther = userRepository.findUserById(Long.parseLong("1"));
+		UserAuth userAuth = (UserAuth) SecurityContextHolder.getContext().getAuthentication();
+		
+		User articleAuther = userRepository.findUserByEmail(userAuth.getEmail()); 
+		
 		Category articleCategory = categoryRepository.findByCategoryName(newArticle.getCategory());
 		
 		if(articleCategory == null) {
@@ -174,22 +181,23 @@ public class ArticleService implements ArticleServiceInterface{
 		
 		articleRepository.save(article);
 		
-		return new BasicResponseDto("New article addedsuccesfully",true);
+		return new BasicResponseDto("New article added succesfully",true);
 	}
 
 	@Override
 	public BasicResponseDto writeAllArticle(List<GetArticleDto> articles) {
+		
 		for(GetArticleDto a : articles) {
 			writeArticle(a);
 		}
+		
 		return new BasicResponseDto("All articles added successfully.",true);
 	}
 
 	@Override 
 	public BasicResponseDto deleteArticleById(Long id) {
-		System.out.println("Service delete: id: "+id);
-		Article deleteArticle= getArticleById(id);
 		
+		Article deleteArticle= getArticleById(id);
 		articleRepository.delete(deleteArticle);
 		
 		return new BasicResponseDto("Article deleted successfully.",true);
@@ -197,15 +205,40 @@ public class ArticleService implements ArticleServiceInterface{
 
 	@Override
 	public BasicResponseDto deleteAllArticles() {
-		System.out.println("Service delete all");
+		
 		articleRepository.deleteAll();
+		
 		return new BasicResponseDto("All articles deleted successfully.",true);
 	}
 
 	@Override
-	public BasicResponseDto editArticle(ArticleDto article) {
-		// TODO Auto-generated method stub
-		return null;
+	public BasicResponseDto editArticle(ArticleDto newArticle) {
+		Article updateArticle = getArticleById(newArticle.getArticleId());
+		
+		if(updateArticle==null) {
+			System.out.println();
+		}
+		Article article = modelMapper.map(newArticle, Article.class);
+		
+		UserAuth userAuth = (UserAuth) SecurityContextHolder.getContext().getAuthentication();
+		
+		User articleAuther = userRepository.findUserByEmail(userAuth.getEmail()); 
+		
+		String categoryName = newArticle.getCategory().getCategoryName();
+		
+		Category articleCategory = categoryRepository.findByCategoryName(categoryName);
+		
+		if(articleCategory == null) {
+			throw new NoSuchElementException("Category not found");
+		}
+		
+		article.setAuthor(articleAuther);
+		article.setCategory(articleCategory);
+		article.setPublicationDate(LocalDateTime.now());
+		
+		articleRepository.save(article);
+		
+		return new BasicResponseDto("Article updated succesfully",true);
 	}
 	
 	public Article getArticleById(Long id) {
@@ -221,6 +254,7 @@ public class ArticleService implements ArticleServiceInterface{
 	public boolean checkValidDate(String dateStr) {
 		String dateFormat = "yyyy-MM-dd";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat);
+        
         try {
             LocalDate.parse(dateStr, formatter);
             return true;
@@ -229,5 +263,29 @@ public class ArticleService implements ArticleServiceInterface{
         }
 	}
 	
+	public GeneralUserDto userToGeneralUser(User user) {
+		
+		GeneralUserDto generalUser = modelMapper.map(user, GeneralUserDto.class);
+		Set<Authority> authorities = user.getAuthorities();
+		
+		List<String> authorityNames = authorities.stream()
+                .map(Authority::getName)
+                .collect(Collectors.toList());
+
+		generalUser.setRole(authorityNames);
+		
+		return generalUser;
+	}
+	
+	public ArticleDto articleToArticleDto(Article article) {
+		
+		ArticleDto articleDto = modelMapper.map(article, ArticleDto.class);
+		GeneralUserDto generalUser = userToGeneralUser(article.getAuthor());
+		
+		articleDto.setAuthor(generalUser);
+		
+		return articleDto;
+		
+	}
 }
 

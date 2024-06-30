@@ -2,8 +2,8 @@ package com.exm.news.dto.article;
 
 import java.time.LocalDateTime;
 
+import com.exm.news.dto.user.GeneralUserDto;
 import com.exm.news.model.Category;
-import com.exm.news.model.User;
 
 public class ArticleDto {
 	
@@ -19,14 +19,14 @@ public class ArticleDto {
 
     private LocalDateTime publicationDate;
 
-    private User author;
+    private GeneralUserDto author;
 
     private Category category;
 
     public ArticleDto() {}
     
     public ArticleDto(Long articleId, String title, String shortContent, String imageUrl, String content,
-			LocalDateTime publicationDate, User author, Category category) {
+			LocalDateTime publicationDate, GeneralUserDto author, Category category) {
 		super();
 		this.articleId = articleId;
 		this.title = title;
@@ -86,11 +86,11 @@ public class ArticleDto {
 		this.publicationDate = publicationDate;
 	}
 
-	public User getAuthor() {
+	public GeneralUserDto getAuthor() {
 		return author;
 	}
 
-	public void setAuthor(User author) {
+	public void setAuthor(GeneralUserDto author) {
 		this.author = author;
 	}
 

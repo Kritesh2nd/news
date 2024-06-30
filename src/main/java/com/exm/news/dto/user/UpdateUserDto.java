@@ -1,33 +1,38 @@
 package com.exm.news.dto.user;
 
-import java.util.List;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
-public class GeneralUserDto {
+public class UpdateUserDto {
 	
-//	TODO remove unnecessary tags
+	@NotBlank(message = "input field cannot be blank")
     private Long userId;
-
+	
+	@NotBlank(message = "input field cannot be blank")
     private String username;
 
+    @Email(message = "invalid email format")
     private String email;
-
+ 
+    @NotBlank(message = "input field cannot be blank")
     private String firstName;
-    
+
+    @NotBlank(message = "input field cannot be blank")
     private String lastName;
 
-    private List<String> role;
+    public UpdateUserDto() {}
 
-    public GeneralUserDto() {}
-
-	public GeneralUserDto(Long userId, String username, String email, String firstName, String lastName,
-			List<String> role) {
+	public UpdateUserDto(@NotBlank(message = "input field cannot be blank") Long userId,
+			@NotBlank(message = "input field cannot be blank") String username,
+			@Email(message = "invalid email format") String email,
+			@NotBlank(message = "input field cannot be blank") String firstName,
+			@NotBlank(message = "input field cannot be blank") String lastName) {
 		super();
 		this.userId = userId;
 		this.username = username;
 		this.email = email;
 		this.firstName = firstName;
 		this.lastName = lastName;
-		this.role = role;
 	}
 
 	public Long getUserId() {
@@ -70,19 +75,4 @@ public class GeneralUserDto {
 		this.lastName = lastName;
 	}
 
-	public List<String> getRole() {
-		return role;
-	}
-
-	public void setRole(List<String> role) {
-		this.role = role;
-	}
-
-	@Override
-	public String toString() {
-		return "GeneralUserDto [userId=" + userId + ", username=" + username + ", email=" + email + ", firstName="
-				+ firstName + ", lastName=" + lastName + ", role=" + role + "]";
-	}
-    
-	
 }

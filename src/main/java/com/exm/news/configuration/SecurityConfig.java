@@ -1,30 +1,40 @@
 package com.exm.news.configuration;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.exm.news.security.filter.CustomFilter;
-
+import com.exm.news.security.filter.BearerTokenFilter;
+import com.exm.news.security.filter.BasicAuthenticationFilter;
 
 @Configuration
+@EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
+
+	@Autowired
+	private BasicAuthenticationFilter customJwtFilter;
 	
 	@Autowired
-	private CustomFilter customFilter;
+	private BearerTokenFilter bearerFilter;
 	
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		return http
-				.addFilterAt(customFilter, UsernamePasswordAuthenticationFilter.class)
-				.authorizeHttpRequests((authorize) -> authorize
+				
+				.csrf(csrf -> csrf.disable())
+				
+				.addFilterBefore(customJwtFilter, UsernamePasswordAuthenticationFilter.class)
+				.addFilterBefore(bearerFilter, UsernamePasswordAuthenticationFilter.class)
+				
+				.authorizeHttpRequests(authorize -> authorize
 						
-						.requestMatchers("/user/add").permitAll()
-						
+						.requestMatchers("/signup").permitAll()
 						.requestMatchers("/article/listAll").permitAll()
 						.requestMatchers("/article/{id}").permitAll()
 						.requestMatchers("/article/listByDate").permitAll()
@@ -35,24 +45,7 @@ public class SecurityConfig {
 						
 				        .anyRequest().authenticated()
 				)
-				
 				.build();
 	}
 
-	public SecurityConfig() {}
-	public SecurityConfig(CustomFilter customFilter) {
-		super();
-		this.customFilter = customFilter;
-	}
-
-
-	public CustomFilter getCustomFilter() {
-		return customFilter;
-	}
-
-
-	public void setCustomFilter(CustomFilter customFilter) {
-		this.customFilter = customFilter;
-	}
-	
 }

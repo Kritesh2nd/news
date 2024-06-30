@@ -12,7 +12,6 @@ import jakarta.persistence.Lob;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 
-
 @Entity
 @Table(name = "article")
 public class Article {

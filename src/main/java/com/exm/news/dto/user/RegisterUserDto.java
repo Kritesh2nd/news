@@ -1,31 +1,38 @@
 package com.exm.news.dto.user;
 
-public class RegisterUserDto {
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
-//	TODO remove unnecessary tags
+public class RegisterUserDto {
+	
+	@NotBlank(message = "input field cannot be blank")
     private String username;
 
+    @Email(message = "invalid email format")
     private String email;
  
+    @NotBlank(message = "input field cannot be blank")
     private String firstName;
 
+    @NotBlank(message = "input field cannot be blank")
     private String lastName;
  
+    @NotBlank(message = "input field cannot be blank")
     private String password;
 
-    private String role;
-
     public RegisterUserDto() {}
-	
-    public RegisterUserDto(String username, String email, String firstName, String lastName, String password,
-			String role) {
+
+	public RegisterUserDto(@NotBlank(message = "input field cannot be blank") String username,
+			@Email(message = "invalid email format") String email,
+			@NotBlank(message = "input field cannot be blank") String firstName,
+			@NotBlank(message = "input field cannot be blank") String lastName,
+			@NotBlank(message = "input field cannot be blank") String password) {
 		super();
 		this.username = username;
 		this.email = email;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.password = password;
-		this.role = role;
 	}
 
 	public String getUsername() {
@@ -67,13 +74,5 @@ public class RegisterUserDto {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
-	public String getRole() {
-		return role;
-	}
-
-	public void setRole(String role) {
-		this.role = role;
-	}
-    
+	
 }

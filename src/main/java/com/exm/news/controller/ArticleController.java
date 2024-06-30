@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,6 +19,8 @@ import com.exm.news.dto.article.GetDateAndCategory;
 import com.exm.news.dto.article.GetTwoDatesWithCategory;
 import com.exm.news.response.BasicResponseDto;
 import com.exm.news.service.ArticleService;
+
+import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -66,7 +68,6 @@ public class ArticleController {
 	
 	@GetMapping(PathConstant.LIST_BY_DATE_RANGES)
 	public ResponseEntity<List<ArticleDto>> findArticleByTwoDates(@RequestBody GetTwoDatesWithCategory twoDateCategory){
-		System.out.println("Controller LIST_BY_Date_RANGES");
 		return new ResponseEntity<List<ArticleDto>>(articleService.listArticleByTwoDates(twoDateCategory),HttpStatus.OK);
 	}
 	
@@ -77,49 +78,35 @@ public class ArticleController {
 
 	
 	
-	
+	@PreAuthorize("hasAnyAuthority('admin','editor')")
 	@PostMapping(PathConstant.ADD)
-	public ResponseEntity<BasicResponseDto> writeArticles(@RequestBody GetArticleDto article){
+	public ResponseEntity<BasicResponseDto> writeArticles(@RequestBody @Valid GetArticleDto article){
 		return new ResponseEntity<BasicResponseDto>(articleService.writeArticle(article),HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasAnyAuthopprity('admin','editor')")
 	@PostMapping(PathConstant.ADD_ALL)
 	public ResponseEntity<BasicResponseDto> writeAllArticle(@RequestBody List<GetArticleDto> articles){
 		return new ResponseEntity<BasicResponseDto>(articleService.writeAllArticle(articles),HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasAnyAuthority('admin','editor')")
 	@PostMapping(PathConstant.UPDATE)
-	public ResponseEntity<BasicResponseDto> updateArticle(@RequestBody ArticleDto article){
+	public ResponseEntity<BasicResponseDto> updateArticle(@RequestBody @Valid ArticleDto article){
 		return new ResponseEntity<BasicResponseDto>(articleService.editArticle(article),HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasAnyAuthority('admin','editor')")
 	@PostMapping(PathConstant.DELETE_BY_ID)
 	public ResponseEntity<BasicResponseDto> deleteById(@PathVariable Long id){
-		System.out.println("Controller delete");
 		return new ResponseEntity<BasicResponseDto>(articleService.deleteArticleById(id),HttpStatus.OK);
 	}
 	
+	@PreAuthorize("hasAnyAuthority('admin','editor')")
 	@PostMapping(PathConstant.DELETE_ALL)
 	public ResponseEntity<BasicResponseDto> deleteAll(){
-		System.out.println("Controller delete all");
 		return new ResponseEntity<BasicResponseDto>(articleService.deleteAllArticles(),HttpStatus.OK);
 	}
 	
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

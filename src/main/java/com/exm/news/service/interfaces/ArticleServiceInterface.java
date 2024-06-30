@@ -25,7 +25,7 @@ public interface ArticleServiceInterface {
 	public BasicResponseDto writeAllArticle(List<GetArticleDto> articles);
 	
 //	CR[U]D
-	public BasicResponseDto editArticle(ArticleDto article);
+	public BasicResponseDto editArticle(ArticleDto newArticle);
 	
 //	CRU[D]
 	public BasicResponseDto deleteArticleById(Long id);

@@ -9,7 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.exm.news.security.authentication.CustomAuth;
+import com.exm.news.security.authentication.UserAuth;
 import com.exm.news.security.manager.AuthManager;
 
 import jakarta.servlet.FilterChain;
@@ -48,11 +48,10 @@ public class CustomFilter extends OncePerRequestFilter{
 		
         System.out.println("username: "+username+", password: "+password);
 
-        CustomAuth ca = new CustomAuth(false, username,password);
+        UserAuth ca = new UserAuth(false, username,password,"",null);
         
-        System.out.println("ca: "+ca.getUsername()+", "+ca.getPassword());
         
-        CustomAuth auth = (CustomAuth) authManager.authenticate(ca);
+        UserAuth auth = (UserAuth) authManager.authenticate(ca);
 		System.out.println("auth: "+auth.toString());
 		if(auth.isAuthenticated()) {
 			SecurityContextHolder.getContext().setAuthentication(auth);
