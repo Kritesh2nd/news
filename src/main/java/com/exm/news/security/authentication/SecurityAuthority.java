@@ -3,7 +3,7 @@ package com.exm.news.security.authentication;
 
 import org.springframework.security.core.GrantedAuthority;
 
-import com.exm.news.model.Authority;
+import com.exm.news.entity.app.Authority;
 
 @SuppressWarnings("serial")
 public class SecurityAuthority implements GrantedAuthority{

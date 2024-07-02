@@ -1,11 +1,11 @@
-package com.exm.news.repository;
+package com.exm.news.repository.app;
 
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import com.exm.news.model.ArticleImage;
+import com.exm.news.entity.app.ArticleImage;
 
 public interface ArticleImageRepository extends JpaRepository<ArticleImage, Long>{
 	

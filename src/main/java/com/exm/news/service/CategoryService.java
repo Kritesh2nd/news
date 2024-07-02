@@ -7,8 +7,8 @@ import java.util.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.exm.news.model.Category;
-import com.exm.news.repository.CategoryRepository;
+import com.exm.news.entity.app.Category;
+import com.exm.news.repository.app.CategoryRepository;
 import com.exm.news.response.BasicResponseDto;
 import com.exm.news.service.interfaces.CategoryServiceInterface;
 @Service

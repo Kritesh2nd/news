@@ -9,9 +9,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.authentication.AuthenticationProvider;
 
-import com.exm.news.model.User;
-import com.exm.news.model.Authority;
-import com.exm.news.repository.UserRepository;
+import com.exm.news.entity.app.Authority;
+import com.exm.news.entity.app.User;
+import com.exm.news.repository.app.UserRepository;
 import com.exm.news.security.authentication.UserAuth;
 
 import java.util.Set;

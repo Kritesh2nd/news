@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.exm.news.dto.user.GeneralUserDto;
-import com.exm.news.model.Category;
+import com.exm.news.entity.app.Category;
 
 public class ArticleImagesDto {
     private Long articleId;

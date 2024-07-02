@@ -23,7 +23,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class BasicAuthenticationFilter extends OncePerRequestFilter{
-	
+		
 	@Autowired
 	private AuthManager authManager;
 	

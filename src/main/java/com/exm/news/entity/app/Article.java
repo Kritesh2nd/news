@@ -1,4 +1,4 @@
-package com.exm.news.model;
+package com.exm.news.entity.app;
 
 import java.time.LocalDateTime;
 

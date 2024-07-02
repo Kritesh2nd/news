@@ -1,4 +1,4 @@
-package com.exm.news.repository;
+package com.exm.news.repository.app;
 
 
 import java.util.Optional;
@@ -7,7 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import com.exm.news.model.User;
+import com.exm.news.entity.app.User;
+
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     
@@ -22,8 +23,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	
 	@Query(nativeQuery = true, value = "SELECT COUNT(*) FROM users")
     int getUserCount();
-	
-	
-	
 	
 } 

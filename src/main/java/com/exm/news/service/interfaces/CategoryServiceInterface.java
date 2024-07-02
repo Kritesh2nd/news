@@ -2,7 +2,7 @@ package com.exm.news.service.interfaces;
 
 import java.util.List;
 
-import com.exm.news.model.Category;
+import com.exm.news.entity.app.Category;
 import com.exm.news.response.BasicResponseDto;
 
 public interface CategoryServiceInterface {

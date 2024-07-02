@@ -14,11 +14,10 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import com.exm.news.model.Authority;
-import com.exm.news.model.User;
-
+import com.exm.news.entity.app.Authority;
+import com.exm.news.entity.app.User;
+import com.exm.news.repository.app.UserRepository;
 import com.exm.news.service.JwtService;
-import com.exm.news.repository.UserRepository;
 import com.exm.news.security.authentication.UserAuth;
 
 import io.jsonwebtoken.security.SignatureException;

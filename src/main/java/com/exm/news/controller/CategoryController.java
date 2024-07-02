@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.exm.news.constant.PathConstant;
-import com.exm.news.model.Category;
+import com.exm.news.entity.app.Category;
 import com.exm.news.response.BasicResponseDto;
 import com.exm.news.service.CategoryService;
 

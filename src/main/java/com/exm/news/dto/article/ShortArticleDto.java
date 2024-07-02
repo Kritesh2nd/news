@@ -1,6 +1,6 @@
 package com.exm.news.dto.article;
 
-import com.exm.news.model.User;
+import com.exm.news.entity.app.User;
 
 public class ShortArticleDto {
 

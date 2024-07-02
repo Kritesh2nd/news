@@ -1,11 +1,12 @@
 package com.exm.news.security.authentication;
 
 
-import com.exm.news.model.User;
 import java.util.stream.Collectors;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import com.exm.news.entity.app.User;
 
 import java.util.Collection;
 

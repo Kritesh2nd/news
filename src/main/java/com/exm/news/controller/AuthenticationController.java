@@ -5,6 +5,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,6 +19,8 @@ import jakarta.validation.Valid;
 import com.exm.news.constant.PathConstant;
 import com.exm.news.response.LoginResponse;
 import com.exm.news.dto.user.RegisterUserDto;
+import com.exm.news.entity.auth.Login;
+import com.exm.news.repository.auth.LoginRepository;
 import com.exm.news.response.BasicResponseDto;
 
 @RestController
@@ -25,6 +30,19 @@ public class AuthenticationController {
 	@Autowired
 	private UserService userService;
 	
+	@Autowired
+	private LoginRepository loginRepository;
+	
+	@GetMapping("cat")
+	public String cat() {
+		return "auth cat";
+	}
+	
+	@GetMapping("userinfo")
+	public List<Login> userinfo() {
+		return loginRepository.findAll();
+	}
+	
 	@PreAuthorize("hasAnyAuthority('admin')")
 	@GetMapping("admin")
 	public String admin() {
@@ -32,9 +50,6 @@ public class AuthenticationController {
 	}
 	
 	@PreAuthorize("hasAnyAuthority('admin','editor')")
-	
-	
-	
 	@GetMapping("editor")
 	public String editor() {
 		return "Editor access";
