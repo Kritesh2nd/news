@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import com.exm.news.model.Article;
 
 @Repository
-public interface ArticleRepository  extends JpaRepository<Article, Long>{
+public interface ArticleRepository extends JpaRepository<Article, Long>{
 	@Query(nativeQuery = true, value="SELECT * FROM article a where u.title = :title")
 	Article findArticleByTitle(String title);
 	
@@ -32,7 +32,12 @@ public interface ArticleRepository  extends JpaRepository<Article, Long>{
 	
 	@Query(nativeQuery = true, value="SELECT * FROM article WHERE DATE(publication_date) BETWEEN :startDate AND :endDate AND category_id = :categoryId")
 	List<Article> findArticleByTwoDatesWithCategory(String startDate, String endDate, Long categoryId);
+	
+//	select*from users order by id desc limit 1;
+	@Query(nativeQuery = true, value="SELECT * FROM article ORDER BY article_id DESC LIMIT 1")
+	Article findLastArticle();
 }
+
 
 /*
  SELECT * FROM article a where a.publication_date = "2024-06-04 17:35:53" AND a.category_id = 1

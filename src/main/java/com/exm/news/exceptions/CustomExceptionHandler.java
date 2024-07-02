@@ -5,6 +5,7 @@ import io.jsonwebtoken.security.SignatureException;
 
 import org.springframework.http.ProblemDetail;
 
+import java.io.IOException;
 import java.time.DateTimeException;
 import java.util.NoSuchElementException;
 
@@ -23,11 +24,13 @@ public class CustomExceptionHandler {
     @ExceptionHandler({BadCredentialsException.class,SignatureException.class,
     	ExpiredJwtException.class,MethodArgumentNotValidException.class,AccessDeniedException.class,
     	NoSuchElementException.class,DateTimeException.class,DuplicateKeyException.class,
-    	UsernameNotFoundException.class})
+    	UsernameNotFoundException.class,IOException.class})
     public ProblemDetail handleSecurityException(Exception ex) {
         
     	ProblemDetail errorDetail = null;    	
         
+    	System.out.println("ex: "+ex);
+    	
     	if (ex instanceof BadCredentialsException) {
             errorDetail = ProblemDetail
                     .forStatusAndDetail(HttpStatusCode.valueOf(401), ex.getMessage());
@@ -76,6 +79,11 @@ public class CustomExceptionHandler {
             errorDetail.setProperty("reason", "Invalid email or token");
         }
     	
+    	if (ex instanceof IOException) {
+            errorDetail = ProblemDetail
+                    .forStatusAndDetail(HttpStatusCode.valueOf(401), ex.getMessage());
+            errorDetail.setProperty("reason", "Invalid Inputs");
+        }
     	
         return errorDetail;
     }

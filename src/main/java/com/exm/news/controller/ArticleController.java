@@ -1,8 +1,11 @@
 package com.exm.news.controller;
 
+import java.io.IOException;
 import java.util.List;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,7 +13,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.exm.news.constant.PathConstant;
 import com.exm.news.dto.article.ArticleDto;
@@ -34,6 +40,13 @@ public class ArticleController {
 	@GetMapping(PathConstant.CAT)
 	public ResponseEntity<String> cat(){
 		return new ResponseEntity<String>("Cat Article",HttpStatus.OK);
+	}
+	
+	@GetMapping("image/{id}")
+	public ResponseEntity<?> getArticleImgById(@PathVariable Long id){
+		HttpHeaders headers = new HttpHeaders();
+	    headers.setContentType(MediaType.IMAGE_PNG);//IMAGE_JPEG
+		return new ResponseEntity<>(articleService.getImage(id),headers,HttpStatus.OK);
 	}
 	
 	@GetMapping(PathConstant.LIST_ALL)
@@ -83,6 +96,18 @@ public class ArticleController {
 	public ResponseEntity<BasicResponseDto> writeArticles(@RequestBody @Valid GetArticleDto article){
 		return new ResponseEntity<BasicResponseDto>(articleService.writeArticle(article),HttpStatus.OK);
 	}
+	
+	@PreAuthorize("hasAnyAuthority('admin','editor','reader')")
+	@PostMapping("addImg")
+	public ResponseEntity<BasicResponseDto> writeArticlesImg(@RequestPart("form") @Valid GetArticleDto article, @RequestPart("img") MultipartFile... imageFiles) throws IOException{
+		System.out.println("form: "+article.toString());
+		
+//		System.out.println("imageFiles: "+imageFiles.getContentType());
+//		return new ResponseEntity<BasicResponseDto>(new BasicResponseDto("working....",false),HttpStatus.OK);
+		return new ResponseEntity<BasicResponseDto>(articleService.writeArtileWithImages(article,imageFiles),HttpStatus.OK);
+	}
+	
+	
 	
 	@PreAuthorize("hasAnyAuthopprity('admin','editor')")
 	@PostMapping(PathConstant.ADD_ALL)

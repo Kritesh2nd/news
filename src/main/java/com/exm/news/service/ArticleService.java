@@ -1,11 +1,13 @@
 package com.exm.news.service;
 
+import java.io.IOException;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -13,18 +15,24 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.exm.news.dto.article.ArticleDto;
+import com.exm.news.dto.article.ArticleImagesDto;
 import com.exm.news.dto.article.GetArticleDto;
 import com.exm.news.dto.article.GetDateAndCategory;
 import com.exm.news.dto.article.GetTwoDatesWithCategory;
 import com.exm.news.dto.user.GeneralUserDto;
 import com.exm.news.model.Article;
+import com.exm.news.model.ArticleImage;
 import com.exm.news.model.Authority;
 import com.exm.news.model.Category;
 import com.exm.news.model.User;
+import com.exm.news.repository.ArticleImageRepository;
 import com.exm.news.repository.ArticleRepository;
 import com.exm.news.repository.CategoryRepository;
 import com.exm.news.repository.UserRepository;
@@ -42,10 +50,24 @@ public class ArticleService implements ArticleServiceInterface{
 	private ArticleRepository articleRepository;
 	
 	@Autowired
+	private ArticleImageRepository articleImageRepository;
+	
+	@Autowired
 	private UserRepository userRepository;
 	
 	@Autowired
 	private CategoryRepository categoryRepository;
+	
+	public List<ArticleImagesDto> getAllArticlesImages(){
+		
+		List<Article> articleList = articleRepository.findAll();
+		List<ArticleImagesDto> articleImagesDto = articleList.stream()
+				.map(article -> articleToArticleImageDto(article))
+				.collect(Collectors.toList());
+		
+		return articleImagesDto;
+	}
+	
 	
 	@Override
 	public List<ArticleDto> getAllArticles() {
@@ -184,6 +206,27 @@ public class ArticleService implements ArticleServiceInterface{
 		return new BasicResponseDto("New article added succesfully",true);
 	}
 
+	
+	
+	@Override
+	public BasicResponseDto writeArtileWithImages(GetArticleDto newArticle, MultipartFile... files) throws IOException {
+		
+		writeArticle(newArticle);
+		Article LastArticle = articleRepository.findLastArticle();
+		
+		List<ArticleImage> articleImages = new ArrayList<ArticleImage>();
+		
+		for(MultipartFile file : files) {
+			System.out.println("file type: "+file.getContentType());
+			String imgFile = Base64.getEncoder().encodeToString(file.getBytes());
+			ArticleImage articleImage = new ArticleImage(Long.valueOf(0),imgFile,LastArticle);
+			articleImages.add(articleImage);
+		}
+		
+		articleImageRepository.saveAll(articleImages);
+		return new BasicResponseDto("New article added with image succesfully",true);
+	}
+	
 	@Override
 	public BasicResponseDto writeAllArticle(List<GetArticleDto> articles) {
 		
@@ -201,7 +244,8 @@ public class ArticleService implements ArticleServiceInterface{
 		articleRepository.delete(deleteArticle);
 		
 		return new BasicResponseDto("Article deleted successfully.",true);
-	}  
+	}
+	
 
 	@Override
 	public BasicResponseDto deleteAllArticles() {
@@ -287,5 +331,44 @@ public class ArticleService implements ArticleServiceInterface{
 		return articleDto;
 		
 	}
+	
+public ArticleImagesDto articleToArticleImageDto(Article article) {
+		
+	ArticleImagesDto articleImagesDto = modelMapper.map(article, ArticleImagesDto.class);
+	GeneralUserDto generalUser = userToGeneralUser(article.getAuthor());
+	
+	List<ArticleImage> articleImages = articleImageRepository.findImagesByArticleId(article.getArticleId());
+		
+	articleImagesDto.setAuthor(generalUser);
+	List<String> images = new ArrayList<String>();
+	for(ArticleImage artiImg : articleImages) {
+		byte[] decodedBytes = Base64.getDecoder().decode(artiImg.getImage());
+		String decodedStringImage = new String(decodedBytes);
+		
+		
+		images.add(decodedStringImage);
+	}
+	articleImagesDto.setImages(images);
+	
+	return articleImagesDto;
+}
+
+
+
+public byte[] getImage(Long articleId) {
+    if (articleId == null) {
+        throw new NoSuchElementException("ImageId is null");
+    }
+    List<ArticleImage> articleImages = articleImageRepository.findImagesByArticleId(articleId);
+    
+    if(articleImages.isEmpty()) {
+    	
+    }
+
+    byte[] imageBytes = java.util.Base64.getDecoder().decode(articleImages.get(0).getImage());
+    
+    return imageBytes;
+}
+
 }
 

@@ -1,6 +1,9 @@
 package com.exm.news.service.interfaces;
 
+import java.io.IOException;
 import java.util.List;
+
+import org.springframework.web.multipart.MultipartFile;
 
 import com.exm.news.dto.article.ArticleDto;
 import com.exm.news.dto.article.GetArticleDto;
@@ -23,6 +26,7 @@ public interface ArticleServiceInterface {
 //	[C]RUD
 	public BasicResponseDto writeArticle(GetArticleDto newArticle);
 	public BasicResponseDto writeAllArticle(List<GetArticleDto> articles);
+	public BasicResponseDto writeArtileWithImages(GetArticleDto newArticle, MultipartFile... files) throws IOException;
 	
 //	CR[U]D
 	public BasicResponseDto editArticle(ArticleDto newArticle);
