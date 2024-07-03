@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.HashSet;
 import java.util.ArrayList;
 
+import com.exm.news.entity.auth.Login;
+import com.exm.news.repository.auth.LoginRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -27,6 +29,9 @@ public class TokenAuthProvider implements AuthenticationProvider{
 	
 	@Autowired
 	private UserRepository userRespository;
+
+	@Autowired
+	private LoginRepository loginRespository;
 	
 	@Autowired
 	private JwtService jwtService;
@@ -35,10 +40,9 @@ public class TokenAuthProvider implements AuthenticationProvider{
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 		
 		UserAuth userTokenAuth = (UserAuth) authentication;
-		User user  = userRespository.findUserByEmail(userTokenAuth.getEmail());
-			
+		Login login  = loginRespository.findLoginByEmail(userTokenAuth.getEmail());
 
-		if(user == null) {
+		if(login == null) {
 			throw new UsernameNotFoundException("user of given token not found");
 		}
 		if(userTokenAuth.getToken() == null) {
@@ -49,15 +53,20 @@ public class TokenAuthProvider implements AuthenticationProvider{
 			throw new UsernameNotFoundException("token expired");
 		}
 
+		User user  = userRespository.findUserById(login.getId());
+
 		try {
 			if(jwtService.isTokenValid(userTokenAuth.getToken(), userTokenAuth)){
-				Set<GrantedAuthority> authoritySet = new HashSet<GrantedAuthority>(); 
+				System.out.println("valid token");
+				System.out.println("user: "+user.toString());
+				Set<GrantedAuthority> authoritySet = new HashSet<GrantedAuthority>();
+
 				for(Authority auth : user.getAuthorities() ) {
 					authoritySet.add(new SimpleGrantedAuthority(auth.getName()));
 				}
 				List<GrantedAuthority> authorityList = new ArrayList<>(authoritySet);
 				
-				return new UserAuth(true, user.getEmail(), null, null, authorityList);
+				return new UserAuth(true, login.getEmail(), null, null, authorityList);
 			}
 		}
 		catch(SignatureException e) {			

@@ -1,6 +1,12 @@
 package com.exm.news.entity.app;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "tag")
 public class Tag {
@@ -13,29 +19,4 @@ public class Tag {
     @Column(name = "tag_name", nullable = false, unique = true)
     private String tagName;
 
-    
-    public Tag() {}
-    
-	public Tag(String tagName) {
-		super();
-		this.tagName = tagName;
-	}
-
-	public Long getTagId() {
-		return tagId;
-	}
-
-	public void setTagId(Long tagId) {
-		this.tagId = tagId;
-	}
-
-	public String getTagName() {
-		return tagName;
-	}
-
-	public void setTagName(String tagName) {
-		this.tagName = tagName;
-	}
-	
-	
 }

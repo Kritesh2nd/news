@@ -20,45 +20,39 @@ import java.util.Map;
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories(
-        entityManagerFactoryRef = "db2EntityManager",
+        entityManagerFactoryRef = "appEntityManager",
         basePackages = "com.exm.news.repository.app",
-        transactionManagerRef = "db2TransactionManager"
+        transactionManagerRef = "appTransactionManager"
 )
-public class DB2Config {
+public class AppDbConfig {
     
-	   @Bean("primaryDataSourceProperties")
-	    @ConfigurationProperties("spring.app.datasource")
-	    DataSourceProperties primaryDataSourceProperties() {
-	        return new DataSourceProperties();
-	    }
+	@Bean("appDataSourceProperties")
+	@ConfigurationProperties("spring.app.datasource")
+	DataSourceProperties appDataSourceProperties() {
+		return new DataSourceProperties();
+	}
 
-	    @Bean("db2DataSource")
-	    @ConfigurationProperties("spring.app.datasource")
-	    public DataSource primaryDataSource(@Qualifier("primaryDataSourceProperties") DataSourceProperties primaryDataSourceProperties) {
-	        return primaryDataSourceProperties
-	                .initializeDataSourceBuilder()
-	                .build();
-	    }
+	@Bean("appDataSource")
+	@ConfigurationProperties("spring.app.datasource")
+	DataSource primaryDataSource(@Qualifier("appDataSourceProperties") DataSourceProperties appDataSourceProperties) {
+		return appDataSourceProperties
+				.initializeDataSourceBuilder()
+				.build();
+	}
     
-
-    
-    @Bean("db2EntityManager")
-    LocalContainerEntityManagerFactoryBean db2EntityManager(@Qualifier("db2DataSource") DataSource dataSource, EntityManagerFactoryBuilder entityManagerFactoryBuilder) {
+    @Bean("appEntityManager")
+    LocalContainerEntityManagerFactoryBean appEntityManager(@Qualifier("appDataSource") DataSource dataSource, EntityManagerFactoryBuilder entityManagerFactoryBuilder) {
         Map<String, Object> jpaProperties = new HashMap<>();
         return entityManagerFactoryBuilder
                 .dataSource(dataSource)
                 .packages("com.exm.news.entity.app")
-                .persistenceUnit("users")
                 .properties(jpaProperties)
                 .build();
     }
 
-
-    @Bean("db2TransactionManager")
-    PlatformTransactionManager db2TransactionManager(@Qualifier("db2EntityManager")
-                                                              LocalContainerEntityManagerFactoryBean entityManagerFactoryBean) {
+    @Bean("appTransactionManager")
+    PlatformTransactionManager appTransactionManager(@Qualifier("appEntityManager")LocalContainerEntityManagerFactoryBean entityManagerFactoryBean) {
         return new JpaTransactionManager(entityManagerFactoryBean.getObject());
     }
-
 
 }

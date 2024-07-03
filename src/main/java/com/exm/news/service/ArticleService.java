@@ -13,6 +13,8 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.exm.news.entity.auth.Login;
+import com.exm.news.repository.auth.LoginRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -52,6 +54,9 @@ public class ArticleService implements ArticleServiceInterface{
 	
 	@Autowired
 	private UserRepository userRepository;
+
+	@Autowired
+	private LoginRepository loginRepository;
 	
 	@Autowired
 	private CategoryRepository categoryRepository;
@@ -186,8 +191,10 @@ public class ArticleService implements ArticleServiceInterface{
 		Article article = modelMapper.map(newArticle, Article.class);
 		
 		UserAuth userAuth = (UserAuth) SecurityContextHolder.getContext().getAuthentication();
-		
-		User articleAuther = userRepository.findUserByEmail(userAuth.getEmail()); 
+
+		Login loginAuthor = loginRepository.findLoginByEmail(userAuth.getEmail());
+
+		User articleAuther = userRepository.findUserById(loginAuthor.getId());
 		
 		Category articleCategory = categoryRepository.findByCategoryName(newArticle.getCategory());
 		
@@ -263,8 +270,10 @@ public class ArticleService implements ArticleServiceInterface{
 		Article article = modelMapper.map(newArticle, Article.class);
 		
 		UserAuth userAuth = (UserAuth) SecurityContextHolder.getContext().getAuthentication();
-		
-		User articleAuther = userRepository.findUserByEmail(userAuth.getEmail()); 
+
+		Login loginAuthor = loginRepository.findLoginByEmail(userAuth.getEmail());
+
+		User articleAuther = userRepository.findUserById(loginAuthor.getId());
 		
 		String categoryName = newArticle.getCategory().getCategoryName();
 		

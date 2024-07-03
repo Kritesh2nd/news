@@ -2,12 +2,17 @@ package com.exm.news.security.authentication;
 
 import java.util.Collection;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.List;
 
-@SuppressWarnings("serial")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserAuth implements Authentication{
 
 	private boolean authenticated;
@@ -53,50 +58,6 @@ public class UserAuth implements Authentication{
 	@Override
 	public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
 		this.authenticated = isAuthenticated;
-	}
-
-	public UserAuth() {}
-
-	public UserAuth(boolean authenticated, String email, String password, String token,
-			List<GrantedAuthority> authority) {
-		super();
-		this.authenticated = authenticated;
-		this.email = email;
-		this.password = password;
-		this.token = token;
-		this.authority = authority;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	public String getToken() {
-		return token;
-	}
-
-	public void setToken(String token) {
-		this.token = token;
-	}
-
-	public List<GrantedAuthority> getAuthority() {
-		return authority;
-	}
-
-	public void setAuthority(List<GrantedAuthority> authority) {
-		this.authority = authority;
 	}
 	
 }

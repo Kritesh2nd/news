@@ -1,7 +1,13 @@
 package com.exm.news.dto.article;
 
 import com.exm.news.entity.app.User;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class ShortArticleDto {
 
 	private Long articleId;
@@ -13,56 +19,5 @@ public class ShortArticleDto {
     private String imageUrl;
 
     private User author;
-
-    public ShortArticleDto() {}
-    
-    public ShortArticleDto(Long articleId, String title, String shortContent, String imageUrl, User author) {
-		super();
-		this.articleId = articleId;
-		this.title = title;
-		this.shortContent = shortContent;
-		this.imageUrl = imageUrl;
-		this.author = author;
-	}
-
-	public Long getArticleId() {
-		return articleId;
-	}
-
-	public void setArticleId(Long articleId) {
-		this.articleId = articleId;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	public String getShortContent() {
-		return shortContent;
-	}
-
-	public void setShortContent(String shortContent) {
-		this.shortContent = shortContent;
-	}
-
-	public String getImageUrl() {
-		return imageUrl;
-	}
-
-	public void setImageUrl(String imageUrl) {
-		this.imageUrl = imageUrl;
-	}
-
-	public User getAuthor() {
-		return author;
-	}
-
-	public void setAuthor(User author) {
-		this.author = author;
-	}
 
 }

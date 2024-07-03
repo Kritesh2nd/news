@@ -33,7 +33,10 @@ public class SecurityConfig {
 				.addFilterBefore(bearerFilter, UsernamePasswordAuthenticationFilter.class)
 				
 				.authorizeHttpRequests(authorize -> authorize
-						
+
+						.requestMatchers("/user/**").permitAll()
+						.requestMatchers("/user/list").permitAll()
+
 						.requestMatchers("/signup").permitAll()
 						.requestMatchers("/article/listAll").permitAll()
 						.requestMatchers("/article/{id}").permitAll()

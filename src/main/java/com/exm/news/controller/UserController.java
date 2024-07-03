@@ -33,7 +33,7 @@ public class UserController {
 		return new ResponseEntity<String>("Cat User",HttpStatus.OK);
 	}
 	
-	@PreAuthorize("hasAnyAuthority('admin','editor')")
+//	@PreAuthorize("hasAnyAuthority('admin','editor')")
 	@GetMapping(PathConstant.LIST)
 	public ResponseEntity<List<GeneralUserDto>> userList(){
 		return new ResponseEntity<List<GeneralUserDto>>(userService.getGeneralUserList(),HttpStatus.OK);

@@ -6,7 +6,6 @@ import java.util.List;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
-@SuppressWarnings("serial")
 public class TokenAuth implements Authentication{
 
 	private boolean authenticated;

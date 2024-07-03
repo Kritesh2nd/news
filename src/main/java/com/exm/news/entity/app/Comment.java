@@ -1,7 +1,13 @@
 package com.exm.news.entity.app;
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "comment")
 public class Comment {
@@ -25,56 +31,4 @@ public class Comment {
     @JoinColumn(name = "article_id", nullable = false)
     private Article article;
 
-    public Comment() {}
-    
-	public Comment(String content, LocalDateTime commentDate, User user, Article article) {
-		super();
-		this.content = content;
-		this.commentDate = commentDate;
-		this.user = user;
-		this.article = article;
-	}
-
-	public Long getCommentId() {
-		return commentId;
-	}
-
-	public void setCommentId(Long commentId) {
-		this.commentId = commentId;
-	}
-
-	public String getContent() {
-		return content;
-	}
-
-	public void setContent(String content) {
-		this.content = content;
-	}
-
-	public LocalDateTime getCommentDate() {
-		return commentDate;
-	}
-
-	public void setCommentDate(LocalDateTime commentDate) {
-		this.commentDate = commentDate;
-	}
-
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
-
-	public Article getArticle() {
-		return article;
-	}
-
-	public void setArticle(Article article) {
-		this.article = article;
-	}
-
-	
-    
 }

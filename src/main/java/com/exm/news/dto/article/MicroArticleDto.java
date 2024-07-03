@@ -1,5 +1,12 @@
 package com.exm.news.dto.article;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class MicroArticleDto {
 	
 	private Long articleId;
@@ -7,38 +14,5 @@ public class MicroArticleDto {
 	private String title;
     
     private String imageUrl;
-
-    public MicroArticleDto() {}
-    
-    public MicroArticleDto(Long articleId, String title, String imageUrl) {
-		super();
-		this.articleId = articleId;
-		this.title = title;
-		this.imageUrl = imageUrl;
-	}
-
-	public Long getArticleId() {
-		return articleId;
-	}
-
-	public void setArticleId(Long articleId) {
-		this.articleId = articleId;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	public String getImageUrl() {
-		return imageUrl;
-	}
-
-	public void setImageUrl(String imageUrl) {
-		this.imageUrl = imageUrl;
-	}
     
 }

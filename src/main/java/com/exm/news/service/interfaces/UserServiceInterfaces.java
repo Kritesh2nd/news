@@ -18,9 +18,10 @@ public interface UserServiceInterfaces {
 	public GeneralUserDto getGeneralUserById(Long id);
 	public UserAuth authenticate(LoginUserDto input);
 	public LoginResponse getUserToken();
+	public GeneralUserDto getMe();
 	
 //	[C]RUD
-	public BasicResponseDto signup(RegisterUserDto input);
+	public BasicResponseDto signup(RegisterUserDto newUserData);
 	
 //	CR[U]D
 	public BasicResponseDto updateUser(UpdateUserDto newUserData);

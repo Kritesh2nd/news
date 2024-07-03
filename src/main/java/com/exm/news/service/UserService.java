@@ -6,6 +6,8 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.exm.news.entity.auth.Login;
+import com.exm.news.repository.auth.LoginRepository;
 import org.modelmapper.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -39,6 +41,9 @@ public class UserService implements UserServiceInterfaces{
 
 	@Autowired
 	private UserRepository userRepository;
+
+	@Autowired
+	private LoginRepository loginRepository;
 	
 	@Autowired
 	private AuthorityRepository authorityRepository;
@@ -51,162 +56,139 @@ public class UserService implements UserServiceInterfaces{
 	
 	@Autowired
 	private JwtService jwtService;
-	
+
+
 	@Override
 	public List<GeneralUserDto> getGeneralUserList() {
-		List<User> userList = userRepository.findAll();
-		List<GeneralUserDto> generalUserList = userList.stream()
+		List<User> usersList = userRepository.findAll();
+        return usersList.stream()
 				.map(user -> {
-					Set<Authority> authorities = user.getAuthorities();
 					GeneralUserDto generalUser = modelMapper.map(user, GeneralUserDto.class);
-					List<String> authorityNames = authorities.stream()
-			                .map(Authority::getName)
-			                .collect(Collectors.toList());
-					generalUser.setRole(authorityNames);
+					Login login = loginRepository.findLoginById(user.getUserId());
+					generalUser.setRole(setAuthorityToListAuthority(user.getAuthorities()));
+					generalUser.setEmail(login.getEmail());
 					return generalUser;
 				})
-				.collect(Collectors.toList());
-
-		return generalUserList;
+				.toList();
 	}
 
 	@Override
 	public GeneralUserDto getGeneralUserById(Long id) {
 		User user = getUserById(id);
-		
 		GeneralUserDto generalUser = modelMapper.map(user, GeneralUserDto.class);
-		
-		Set<Authority> authorities = user.getAuthorities();
-		
-		List<String> authorityNames = authorities.stream()
-                .map(Authority::getName)
-                .collect(Collectors.toList());
-
-		generalUser.setRole(authorityNames);
-		
+		generalUser.setRole(setAuthorityToListAuthority(user.getAuthorities()));
 		return generalUser;
 	}
-	
+
 	@Override
 	public UserAuth authenticate(LoginUserDto input) {
-		UserAuth userAuth = modelMapper.map(input, UserAuth.class);
-		try {
-			UserAuth auth = (UserAuth) authProvider.authenticate(userAuth);
-			if(!auth.isAuthenticated()) {
-				throw new UsernameNotFoundException("Username not found"); 
-			}
-			User registeredUser = userRepository.findUserByEmail(auth.getEmail());
-			
-			UserAuth userDetail = modelMapper.map(registeredUser, UserAuth.class);
-			
-			return userDetail;
-		}
-		catch(Exception e) {
-			throw new UsernameNotFoundException("User email not found");
-		}
+		return null;
 	}
 
 	@Override
-	public BasicResponseDto signup(RegisterUserDto newUser) {
-//		Using native query findUserByEmail()
-		User userWithEmail = userRepository.findUserByEmail(newUser.getEmail());
-		if(userWithEmail!=null) {
+	public LoginResponse getUserToken() {
+		UserAuth userAuth = (UserAuth) SecurityContextHolder.getContext().getAuthentication();
+
+		if(userAuth == null) {
+			throw new NoSuchElementException("user not found, cannot make token");
+		}
+
+		String jwtToken = jwtService.generateToken(userAuth);
+		LoginResponse loginResponse = new LoginResponse();
+		loginResponse.setToken(jwtToken);
+		loginResponse.setExpiresIn(jwtService.getExpirationTime());
+
+		return loginResponse;
+	}
+
+	@Override
+	public GeneralUserDto getMe(){
+		UserAuth userAuth = (UserAuth) SecurityContextHolder.getContext().getAuthentication();
+		if(userAuth == null) {
+			throw new NoSuchElementException("User not found");
+		}
+		Login login = loginRepository.findLoginByEmail(userAuth.getEmail());
+		GeneralUserDto generalUserDto = getGeneralUserById(login.getId());
+		generalUserDto.setEmail(login.getEmail());
+		return generalUserDto;
+	}
+
+	@Override
+	public BasicResponseDto signup(RegisterUserDto newUserData) {
+
+		Login loginUserEmail = loginRepository.findLoginByEmail(newUserData.getEmail());
+		if(loginUserEmail!=null) {
 			return new BasicResponseDto("User with this email already exits.",false);
 		}
 
-		User user = modelMapper.map(newUser, User.class);		
-		
+		Login login = modelMapper.map(newUserData, Login.class);
+		login.setPassword(encodePassword(newUserData.getPassword()));
+		loginRepository.save(login);
+
+		User user = modelMapper.map(newUserData, User.class);
+
 		Set<Authority> userAuthorities = new HashSet<Authority>();
 		Authority userAuthority = authorityRepository.findAuthorityByName("reader");
 		userAuthorities.add(userAuthority);
 		user.setAuthorities(userAuthorities);
-		
-		String encryptedPassword = encodePassword(user.getPassword());
-		user.setPassword(encryptedPassword);
-		
+
 		userRepository.save(user);
-				
+
 		return new BasicResponseDto("New user added successfully.",true);
+
 	}
 
 	@Override
 	public BasicResponseDto updateUser(UpdateUserDto newUserData) {
-		
+
 		UserAuth userAuth = (UserAuth) SecurityContextHolder.getContext().getAuthentication();
 		User updateThisUser = getUserById(newUserData.getUserId());
-		
+		Login updateThisUserEmail = loginRepository.findLoginById(newUserData.getUserId());
+
 		if(userAuth == null || updateThisUser == null) {
 			throw new NoSuchElementException("User not found");
 		}
-		
-		User loggedInUser = userRepository.findUserByEmail(userAuth.getEmail());
-		User newUserEmail = userRepository.findUserByEmail(newUserData.getEmail());
-		
-		if(!loggedInUser.getUserId().equals(newUserData.getUserId())) {
+
+		Login loggedInUser = loginRepository.findLoginByEmail(userAuth.getEmail());
+		Login newUserEmail = loginRepository.findLoginByEmail(newUserData.getEmail());
+
+//		User loggedInUser = userRepository.findUserByEmail(userAuth.getEmail());
+//		User newUserEmail = userRepository.findUserByEmail(newUserData.getEmail());
+
+		if(!loggedInUser.getId().equals(newUserData.getUserId())) {
 			throw new AccessDeniedException("Cannot update this user");
 		}
-		
+
 		if(newUserEmail == null) {
-			
+
 		}
 		else if(!newUserData.getEmail().equals(loggedInUser.getEmail()) && newUserData.getEmail().equals(newUserEmail.getEmail())) {
 			throw new DuplicateKeyException("Cannot update. This email already in use");
 		}
-		updateThisUser.setEmail(newUserData.getEmail());
+		updateThisUserEmail.setEmail(newUserData.getEmail());
 		updateThisUser.setFirstName(newUserData.getFirstName());
 		updateThisUser.setLastName(newUserData.getLastName());
 		updateThisUser.setUsername(newUserData.getUsername());
 		userRepository.save(updateThisUser);
-		
+		loginRepository.save(updateThisUserEmail);
+
 		return new BasicResponseDto("User updated successfully.",true);
 	}
 
 	@Override
 	public BasicResponseDto updateUserPassword(Long id, String password) {
-		User newUser = getUserById(id);
-
-		newUser.setPassword(password);
-		userRepository.save(newUser);
+		Login userLogin = getLoginById(id);
+		userLogin.setPassword(password);
+		loginRepository.save(userLogin);
 
 		return new BasicResponseDto("Password updated successfully.",true);
 	}
 
-	
-	@Override
-	public BasicResponseDto deleteMyAccount() {
-		UserAuth userAuth = (UserAuth) SecurityContextHolder.getContext().getAuthentication();
-		
-		if(userAuth == null) {
-			throw new NoSuchElementException("user not found, cannot delete the user account");
-		}
-		User deleteUser = userRepository.findUserByEmail(userAuth.getEmail());
-		userRepository.delete(deleteUser);
-
-		return new BasicResponseDto("Your account is deleted successfully.",true);
-	}
-	
-	@Override
-	public LoginResponse getUserToken() {
-		UserAuth userAuth = (UserAuth) SecurityContextHolder.getContext().getAuthentication();
-		
-		if(userAuth == null) {
-			throw new NoSuchElementException("user not found, cannot make token");
-		}
-		
-		String jwtToken = jwtService.generateToken(userAuth);
-		LoginResponse loginResponse = new LoginResponse();
-    	loginResponse.setToken(jwtToken);
-    	loginResponse.setExpiresIn(jwtService.getExpirationTime());
-		
-		return loginResponse;
-	}
-	
-	
 	@Override
 	public BasicResponseDto updateUserAuthority(UpdateAuthorityDto userAuthority) {
 		try {
 			User user = getUserById(userAuthority.getUserId());
-			
+
 			Set<Authority> userAuthorities = user.getAuthorities();
 			Authority newUserAuthority = authorityRepository.findAuthorityByName("editor");
 			userAuthorities.add(newUserAuthority);
@@ -221,10 +203,25 @@ public class UserService implements UserServiceInterfaces{
 	}
 
 	@Override
+	public BasicResponseDto deleteMyAccount() {
+		UserAuth userAuth = (UserAuth) SecurityContextHolder.getContext().getAuthentication();
+
+		if(userAuth == null) {
+			throw new NoSuchElementException("user not found, cannot delete the user account");
+		}
+		Login deleteUserLogin = loginRepository.findLoginByEmail(userAuth.getEmail());
+		User deleteUser = userRepository.findUserById(deleteUserLogin.getId());
+		loginRepository.delete(deleteUserLogin);
+		userRepository.delete(deleteUser);
+
+		return new BasicResponseDto("Your account is deleted successfully.",true);
+	}
+
+	@Override
 	public BasicResponseDto removeUserAuthority(UpdateAuthorityDto userAuthority) {
 		try {
 			User user = getUserById(userAuthority.getUserId());
-			
+
 			Set<Authority> userAuthorities = user.getAuthorities();
 			Authority newUserAuthority = authorityRepository.findAuthorityByName("editor");
 			userAuthorities.remove(newUserAuthority);
@@ -237,29 +234,11 @@ public class UserService implements UserServiceInterfaces{
 		}
 		return new BasicResponseDto("User authority removed successfully.",true);
 	}
-	
-	public GeneralUserDto getMe() {
-		UserAuth userAuth = (UserAuth) SecurityContextHolder.getContext().getAuthentication();
-		
-		if(userAuth == null) {
-			return null;
-		}
-		User user = userRepository.findUserByEmail(userAuth.getEmail());
-		
-		GeneralUserDto generalUser = modelMapper.map(user, GeneralUserDto.class);
 
-		Set<Authority> authorities = user.getAuthorities();
-		
-		List<String> authorityNames = authorities.stream()
-                .map(Authority::getName)
-                .collect(Collectors.toList());
-
-		generalUser.setRole(authorityNames);
-		
-		return generalUser;
-		
+	public String encodePassword(String rawPassword) {
+		return passwordEncoder.encode(rawPassword);
 	}
-	
+
 	public User getUserById(Long id) {
 		User user = userRepository.findUserById(id);
 		if(user == null) {
@@ -267,18 +246,18 @@ public class UserService implements UserServiceInterfaces{
 		}
 		return user;
 	}
-	
-	public String encodePassword(String rawPassword) {
-        return passwordEncoder.encode(rawPassword);
-    }
 
+	public Login getLoginById(Long id) {
+		Login login = loginRepository.findLoginById(id);
+		if(login == null) {
+			throw new NoSuchElementException("User not found");
+		}
+		return login;
+	}
 
-	
+	public List<String> setAuthorityToListAuthority(Set<Authority> setAuthority){
+        return setAuthority.stream()
+				.map(Authority::getName)
+				.collect(Collectors.toList());
+	}
 }
-
-
-
-
-
-
-

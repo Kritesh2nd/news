@@ -8,7 +8,13 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "article_tag")
 public class ArticleTag {
@@ -26,38 +32,4 @@ public class ArticleTag {
     @JoinColumn(name = "tag_id", nullable = false)
     private Tag tag;
 
-    public ArticleTag() {}
-	
-    public ArticleTag(Article article, Tag tag) {
-		super();
-		this.article = article;
-		this.tag = tag;
-	}
-
-	public Long getArticleTagId() {
-		return articleTagId;
-	}
-
-	public void setArticleTagId(Long articleTagId) {
-		this.articleTagId = articleTagId;
-	}
-
-	public Article getArticle() {
-		return article;
-	}
-
-	public void setArticle(Article article) {
-		this.article = article;
-	}
-
-	public Tag getTag() {
-		return tag;
-	}
-
-	public void setTag(Tag tag) {
-		this.tag = tag;
-	}
-
-    
-    
 }

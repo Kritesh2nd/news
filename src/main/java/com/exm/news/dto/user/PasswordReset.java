@@ -1,36 +1,18 @@
 package com.exm.news.dto.user;
 
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class PasswordReset {
 
-//	TODO remove unnecessary tags
     private Long userId;
-	
+
+	@NotBlank
     private String password;
-	
-	public PasswordReset() {}
-	
-	public PasswordReset(Long userId, @NotBlank(message = "please enter data") String password) {
-		super();
-		this.userId = userId;
-		this.password = password;
-	}
-
-	public Long getUserId() {
-		return userId;
-	}
-
-	public void setUserId(Long userId) {
-		this.userId = userId;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
 
 }
